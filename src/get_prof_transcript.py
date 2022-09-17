@@ -1,13 +1,6 @@
-import cohere
-import pandas as pd
-from sklearn.model_selection import train_test_split
 from load_audio import get_response
-from tqdm import tqdm
-import spacy
-import re
 
 filename = "Asking Harvard Students If They Ever Sleep.mp3"
-
 
 def generate_prof_transcript(file):
     # assumption: speaker A is the prof <3
