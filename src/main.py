@@ -2,7 +2,11 @@ import os
 
 from flask import Flask
 from load_audio import get_response
+<<<<<<< HEAD
 from get_prof_transcript import generate_prof_transcript
+=======
+from get_transcript import generate_prof_transcript
+>>>>>>> cef976c3555cfffe79133909c9357ab8d09c3d67
 
 app = Flask(__name__)
 
@@ -26,8 +30,13 @@ def prof_transcript():
 
 @app.route("/test")
 def test():
+<<<<<<< HEAD
     speaker_to_str = generate_prof_transcript(filename)
     return speaker_to_str 
+=======
+    return generate_prof_transcript(filename)
+    # return get_prof_embedding(speaker_to_str)
+>>>>>>> cef976c3555cfffe79133909c9357ab8d09c3d67
 
 
 if __name__ == "__main__":
