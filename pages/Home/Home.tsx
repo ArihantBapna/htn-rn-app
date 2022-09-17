@@ -1,5 +1,5 @@
 import { signOut } from "@firebase/auth";
-import { Button, Box, Fab, Text, useToast } from "native-base";
+import {Button, Box, useToast, Center, ScrollView, Heading} from "native-base";
 import { auth, db } from "../../firebase";
 import { Audio } from "expo-av";
 import { useState } from "react";
@@ -96,9 +96,13 @@ export function HomePage() {
   }
 
   return (
-    <Box height={"100%"} safeArea>
-      <Text>This is Home Page</Text>
-
+    <Box height={"100%"} px={8} safeArea>
+      <Heading>Your Recordings</Heading>
+      <Center>
+        <ScrollView w={"100%"} style={{display: "flex", flexGrow: 1, flexBasis: "90%", flexDirection: "column"}}>
+          <Heading fontSize="xl">Cyan</Heading>
+        </ScrollView>
+      </Center>
       <Button
         onPress={() => {
           signOut(auth)
@@ -114,12 +118,12 @@ export function HomePage() {
       >
         Logout
       </Button>
-      <Fab
-        onPress={recording ? stopRecording : startRecording}
-        renderInPortal={false}
-        shadow={2}
-        size="lg"
-      />
+      {/*<Fab*/}
+      {/*  onPress={recording ? stopRecording : startRecording}*/}
+      {/*  renderInPortal={false}*/}
+      {/*  shadow={2}*/}
+      {/*  size="lg"*/}
+      {/*/>*/}
     </Box>
   );
 }
