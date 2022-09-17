@@ -11,7 +11,7 @@ class Flashcard:
     _headline_embedding: list
     _embedding: list
 
-    def init(self, front, back, gist, first, second, headline_str, headline_embedding, embedding):
+    def __init__(self, front, back, gist, first, second, headline_str, headline_embedding, embedding):
         self.front = front
         self.back = back
         self.gist = gist
@@ -33,7 +33,7 @@ class Node:
     point_out: set
     point_in: set
 
-    def init(self, front, point_out, point_in):
+    def __init__(self, front, point_out, point_in):
         self.front = front
         self.point_in = point_in
         self.point_out = point_out
