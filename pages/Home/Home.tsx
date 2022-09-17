@@ -146,20 +146,25 @@ export function HomePage() {
                 my={3}
               >
                 <Heading>{recording.name}</Heading>
-                <IconButton
-                icon={<Ionicons name="download" size={24} color="black" />}
-                  onPress={() => {
-                    Linking.openURL(recording.url)
-                      .then()
-                      .catch((err) => {
-                        toast.show({
-                          title: "Error opening file",
-                          backgroundColor: "red.500",
-                        });
-                      });
-                  }}
-                >
-                </IconButton>
+                <HStack space={2} alignItems={"center"} display={"flex"}>
+                    <IconButton
+                        icon={<Ionicons name="download" size={24} color="black" />}
+                        onPress={() => {
+                            Linking.openURL(recording.url)
+                                .then()
+                                .catch((err) => {
+                                    toast.show({
+                                        title: "Error opening file",
+                                        backgroundColor: "red.500",
+                                    });
+                                });
+                        }}
+                    >
+                    </IconButton>
+                    <IconButton icon={<Ionicons name={"clipboard-outline"} size={24} color={"black"}/>}>
+
+                    </IconButton>
+                </HStack>
               </HStack>
             );
           })}
@@ -180,12 +185,6 @@ export function HomePage() {
       >
         Logout
       </Button>
-      {/*<Fab*/}
-      {/*  onPress={recording ? stopRecording : startRecording}*/}
-      {/*  renderInPortal={false}*/}
-      {/*  shadow={2}*/}
-      {/*  size="lg"*/}
-      {/*/>*/}
     </Box>
   );
 }
