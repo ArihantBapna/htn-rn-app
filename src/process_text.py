@@ -23,6 +23,7 @@ def get_prof_data(url):
 
 
 def json_to_lst(text_content: str):
+    """Converts a json transcript to a list of strings."""
     # assumption: this is the prof's transcript
     text_content = re.sub(r"\(.*\)", "", text_content)
     nlp = English()  # just the language with no pipeline
@@ -37,6 +38,7 @@ def json_to_lst(text_content: str):
 
 
 def get_titles_from_chapters(chapter: Tuple[str]) -> str:
+    """Returns the titles of the chapters."""
     # get the unique keywords for each flashcard from the chapter
     # Query LLM here to give me the key idea based on the chapter gist, summary, and headline
     # ironing out the kinks in prompt generation for now keep it simple and just return the gist
@@ -45,6 +47,7 @@ def get_titles_from_chapters(chapter: Tuple[str]) -> str:
 
 # options for ANN "angular", "euclidean", "manhattan", "hamming", or "dot"
 def get_similar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
+    """Returns the top n similar sentences to each headline."""
     phrases_to_vectors = dict(
         zip(prof_transcript, prof_embeddings)
     )  # map our phrases to embeddings
@@ -85,6 +88,7 @@ def get_similar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
 
 
 def get_flashcards(url) -> Set[Flashcard]:
+    """Returns a set of flashcards for the given url."""
     # get the transcript and relevant data
     prof_data = get_prof_data(url)  # (transcript, embeddings, entities, chapters)
     prof_transcript = prof_data[0]
