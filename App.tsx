@@ -3,7 +3,6 @@ import { extendTheme, NativeBaseProvider } from "native-base";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import LoginPage from "./pages/Login";
-import RegisterPage from "./pages/Register";
 import HomePage from "./pages/Home";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -49,11 +48,6 @@ export default function App() {
               <Stack.Screen
                 name={"home"}
                 component={LoginPage}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name={"register"}
-                component={RegisterPage}
                 options={{ headerShown: false }}
               />
             </>
