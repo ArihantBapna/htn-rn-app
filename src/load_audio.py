@@ -12,6 +12,30 @@ def read_file(filename, chunk_size=5242880):
                 break
             yield data
 
+def get_response_from_url(url):
+    headers = {'authorization': "b479f0aa918d4566aaacdec3f82c9b54", 'content-type': "application/json"}
+    endpoint = "https://api.assemblyai.com/v2/transcript"
+    json = {
+        "audio_url": url,
+        "disfluencies": True,
+        "speaker_labels": True,
+        "auto_chapters": True,
+        "entity_detection": True,
+    }
+    response = requests.post(endpoint, json=json, headers=headers)
+    transcript_id = response.json()['id']
+    print(transcript_id)
+    curr_status = response.json()['status']
+    endpoint = f"https://api.assemblyai.com/v2/transcript/{transcript_id}"
+
+    while curr_status != 'completed' and curr_status != 'error' or curr_status == 'queued':
+        response = requests.get(endpoint, headers=headers)
+        curr_status = response.json()['status']
+
+    if curr_status == 'error':
+        return {"error": "error"}
+    return response.json()
+
 
 def get_response(file):
     headers = {'authorization': "b479f0aa918d4566aaacdec3f82c9b54"}
