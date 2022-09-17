@@ -1,23 +1,25 @@
+from typing import Tuple, Set
 from get_transcript import get_transcript
-import spacy
+from spacy.lang.en import English
 import re
 import cohere
 import annoy
 from flashcard import Flashcard
 
 
+filename = "Asking Harvard Students If They Ever Sleep.mp3"
+api_key = "2LMDM3GEVPLvDVoSQlm4bV5W4EbKn2ZW0jgl6zEM"
+co = cohere.Client(api_key)
+
+
 def get_prof_data(filename):
     """Returns the structured data of the prof's transcript."""
-    api_key = "2LMDM3GEVPLvDVoSQlm4bV5W4EbKn2ZW0jgl6zEM"
-    co = cohere.Client(api_key)
     speaker_to_str = get_transcript(filename)
     transcript = json_to_lst(speaker_to_str["A"])
-    # entities = speaker_to_str['entities?']
-    embedding = co.embed(
-        texts=prof_transcript, model="large", truncate="RIGHT"
-    ).embeddings
+    entities = speaker_to_str['entities?']
+    embedding = co.embed(texts=transcript, model="large", truncate="RIGHT").embeddings
     chapters = speaker_to_str["chapters"]  # (gist, headline, summary)
-    return (embedding, transcript, entities, chapters)
+    return embedding, transcript, entities, chapters
 
 
 def json_to_lst(text_content: str):
@@ -28,7 +30,10 @@ def json_to_lst(text_content: str):
     doc = nlp(text_content)
     sentences = [x for x in doc.sents]
     assert sentences == [str(x) for x in doc.sents]  # sanity check
-    return sentences
+    transcript = []
+    for sentence in doc.sents:
+        transcript.append(sentence.text)
+    return transcript
 
 
 def get_titles_from_chapters(chapter: Tuple[str]) -> str:
@@ -39,18 +44,18 @@ def get_titles_from_chapters(chapter: Tuple[str]) -> str:
 
 
 # options for ANN "angular", "euclidean", "manhattan", "hamming", or "dot"
-def get_similiar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
+def get_similar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
     phrases_to_vectors = dict(
         zip(prof_transcript, prof_embeddings)
     )  # map our phrases to embeddings
 
     seen = set()  # seen phrases, prevent duplicate similar sentences
-    similiar_sentences = set() # key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
+    similar_sentences = {}  # key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
 
-    search_index = AnnoyIndex(
+    search_index = annoy.AnnoyIndex(
         prof_embeddings.shape[1], "angular"
     )  # build ANN search tree
-    for i in range(len(prof_embedding)):
+    for i in range(len(prof_embeddings)):
         search_index.add_item(i, prof_embeddings[i])
     search_index.build(10)  # 10 trees
 
@@ -61,7 +66,7 @@ def get_similiar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
         headline_embedding = co.embed(
             texts=[headline], model="large", truncate="RIGHT"
         ).embeddings
-        similiar_sentences[headline] = (headline_embedding, [], [])
+        similar_sentences[headline] = (headline_embedding, [], [])
 
     for i in range(n):
         for headline in headlines:
@@ -87,17 +92,17 @@ def get_flashcards(filename) -> Set[Flashcard]:
     entities = prof_data[2]
     chapters = prof_data[3]
     # get the chapters, get the unique titles from each chapter
-    titles = [get_title_from_chapter(c) for c in chapters]
+    titles = [get_titles_from_chapters(c) for c in chapters]
     headlines = [c[1] for c in chapters]
-    # get the similiar sentences to each headline
-    similiar_sentences = get_similar_sentences(
+    # get the similar sentences to each headline
+    similar_sentences = get_similar_sentences(
         prof_transcript, prof_embeddings, headlines
     )
     # ^^^ key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
     flashcards = set()
     for t in titles:
-        sents = "\n".join(similiar_sentences[1])
-        back = f"{headline}\n{sents}"
+        sents = "\n".join(similar_sentences[1])
+        back = f"{headlines}\n{sents}"
         embedding = co.embed(texts=[back], model="large", truncate="RIGHT").embeddings
         flashcards.add(
             Flashcard(
@@ -106,11 +111,10 @@ def get_flashcards(filename) -> Set[Flashcard]:
                 chapters[0],
                 None,
                 None,
-                headline,
-                similiar_sentences[0],
-                similiar_sentences,
-                embeddings[0],
-                None,
+                headlines,
+                similar_sentences[0],
+                similar_sentences,
+                embedding[0]
             )
         )
     # init flashcard: need front: str
