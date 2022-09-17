@@ -1,4 +1,4 @@
-from get_transcript import generate_transcript
+from get_transcript import get_transcript
 import spacy
 import re
 import cohere
