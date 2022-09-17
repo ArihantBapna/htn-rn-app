@@ -1,6 +1,6 @@
 import requests
 
-filename = "sample_file.wav"
+filename = "Asking Harvard Students If They Ever Sleep.mp3"
 
 
 def read_file(filename, chunk_size=5242880):
@@ -12,11 +12,11 @@ def read_file(filename, chunk_size=5242880):
             yield data
 
 
-def get_response():
+def get_response(file):
     headers = {'authorization': "b479f0aa918d4566aaacdec3f82c9b54"}
     response = requests.post('https://api.assemblyai.com/v2/upload',
                             headers=headers,
-                            data=read_file(filename))
+                            data=read_file(file))
     res = response.json()  # upload audio
     if res['upload_url']:
         endpoint = "https://api.assemblyai.com/v2/transcript"
@@ -30,6 +30,7 @@ def get_response():
             "auto_highlights": True,  # TODO: test
             "auto_chapters": True,   # TODO: test
             "entity_detection": True,  # TODO: test
+            "iab_categories": True  # TODO: test
         }
         response = requests.post(endpoint, json=json, headers=headers)
         print(response.json())  # begin transcript process
@@ -48,6 +49,5 @@ def get_response():
         if curr_status == 'error':
             print("you suck")
             return
-        transcript = response.json()['text']
-        return f"{transcript}"
+        return response.json()
     return "you also suck"
