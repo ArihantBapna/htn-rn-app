@@ -14,9 +14,10 @@ co = cohere.Client(api_key)
 
 def get_prof_data(url):
     """Returns the structured data of the prof's transcript."""
-    speaker_to_str = get_transcript_from_url()
+    speaker_to_str = get_transcript_from_url(url)
     transcript = json_to_lst(speaker_to_str["A"])
-    entities = speaker_to_str['entities?']
+    print(speaker_to_str)
+    entities = speaker_to_str["entities"]
     embedding = co.embed(texts=transcript, model="large", truncate="RIGHT").embeddings
     chapters = speaker_to_str["chapters"]  # (gist, headline, summary)
     return embedding, transcript, entities, chapters
@@ -28,8 +29,6 @@ def json_to_lst(text_content: str):
     nlp = English()  # just the language with no pipeline
     nlp.add_pipe("sentencizer")
     doc = nlp(text_content)
-    sentences = [x for x in doc.sents]
-    assert sentences == [str(x) for x in doc.sents]  # sanity check
     transcript = []
     for sentence in doc.sents:
         transcript.append(sentence.text)
