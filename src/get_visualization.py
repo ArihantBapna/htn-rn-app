@@ -3,6 +3,7 @@ from flashcard import Flashcard, Node
 from process_text import get_flashcards
 import numpy as np
 import pandas as pd
+from collections import defaultdict
 
 filename = "Asking Harvard Students If They Ever Sleep.mp3"
 
@@ -29,7 +30,8 @@ def visualize_data():
     lonely, edges = determine_lonely_popular_fan(nodes)
     adjust_graph(lonely, edges)
 
-    return nodes
+    # rank nodes by # of input nodes
+    return rank_nodes(nodes)
 
 
 def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]):
@@ -142,3 +144,19 @@ def adjust_graph(lonely: Set[Node], edges: Set[tuple]):
 
             else:
                 edges.remove((fan_node, popular_node))
+
+
+def rank_nodes(nodes: Set[Node]):
+    """Return a list of nodes in order of point_in Nodes there are.
+    """
+    m = 0
+    d = defaultdict(list)
+    lst = []
+    for node in nodes:
+        d[len(node.point_in)].append(node.flashcard.front)
+        if len(node.point_in) > m:
+            m = len(node.point_in)
+    for i in range(m):
+        if i in d:
+            lst.extend(d[i])
+    return lst
