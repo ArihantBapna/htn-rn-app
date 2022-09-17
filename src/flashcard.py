@@ -5,8 +5,8 @@ class Flashcard:
     left: str = None
     right: str = None
     headline: str
-    _headline: list[float]
-    _embedding: list[list[float]]
+    _headline: list
+    _embedding: list
 
     def init(self, front, back, gist, left, right, headline_str, headline_embed, embedding):
         self.front = front
@@ -18,4 +18,3 @@ class Flashcard:
         self.left = left
         self.right = right
 
-    
