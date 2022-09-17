@@ -21,18 +21,12 @@ def load_audio():
 
 @app.route("/prof_transcript")
 def prof_transcript():
-    return generate_prof_transcript(filename)
+    return get_transcript(filename)
 
 
 @app.route("/test")
 def test():
-<<<<<<< HEAD
-    speaker_to_str = generate_prof_transcript(filename)
-    return speaker_to_str 
-=======
-    return generate_prof_transcript(filename)
-    # return get_prof_embedding(speaker_to_str)
->>>>>>> cef976c3555cfffe79133909c9357ab8d09c3d67
+    return
 
 
 if __name__ == "__main__":
