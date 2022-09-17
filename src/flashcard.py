@@ -4,14 +4,16 @@ class Flashcard:
     gist: str
     left: str = None
     right: str = None
-    _headline: str
-    _embedding: list
+    headline: str
+    _headline: list[float]
+    _embedding: list[list[float]]
 
-    def init(self, front, back, gist, headline, embedding, left, right):
+    def init(self, front, back, gist, left, right, headline_str, headline_embed, embedding):
         self.front = front
         self.back = back
         self.gist = gist
-        self._headline = headline
+        self.headline = headline_str
+        self._headline = headline_embed
         self._embedding = embedding
         self.left = left
         self.right = right
