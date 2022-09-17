@@ -1,5 +1,4 @@
 from typing import Dict, Set
-
 from flashcard import Flashcard, Node
 from process_text import get_flashcards
 import numpy as np
