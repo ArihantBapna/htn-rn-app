@@ -10,7 +10,7 @@ import {
     VStack
 } from "native-base";
 import NativeBaseIcon from "../../components/NativeBaseIcon";
-import {signInWithEmailAndPassword} from "firebase/auth";
+import {onAuthStateChanged, signInWithEmailAndPassword} from "firebase/auth";
 import React, {useState} from "react";
 import {auth} from "../../firebase";
 import {useNavigation} from "@react-navigation/native";

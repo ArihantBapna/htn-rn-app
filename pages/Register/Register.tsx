@@ -17,6 +17,7 @@ export function RegisterPage(){
             (userCred) => {
                 const user = userCred.user;
                 console.log("User created:" + user);
+                (navigation as any).navigate("home")
             }
         ).catch((error) => {
             toast.show({title: error.code, description: error.message, backgroundColor: "red.600"});

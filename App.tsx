@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   extendTheme,
     NativeBaseProvider,
@@ -7,6 +7,9 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {NavigationContainer} from "@react-navigation/native";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
+import HomePage from "./pages/Home";
+import {auth} from "./firebase";
+import {onAuthStateChanged} from "firebase/auth";
 
 // Define the config
 const config = {
@@ -24,12 +27,26 @@ declare module "native-base" {
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [isSignedIn, setIsSignedIn] = useState<boolean>(auth.currentUser != null);
+
+  onAuthStateChanged(auth, (user) => {
+      setIsSignedIn(user != null);
+  })
+
   return (
       <NativeBaseProvider>
           <NavigationContainer>
               <Stack.Navigator>
-                  <Stack.Screen name={"login"} component={LoginPage} options={{headerShown: false}} />
-                  <Stack.Screen name={"register"} component={RegisterPage} options={{headerShown: false}} />
+                  {isSignedIn ? (
+                      <>
+                          <Stack.Screen name={"homePage"} component={HomePage} options={{headerShown: false}} />
+                      </>
+                  ) : (
+                        <>
+                            <Stack.Screen name={"home"} component={LoginPage} options={{headerShown: false}} />
+                            <Stack.Screen name={"register"} component={RegisterPage} options={{headerShown: false}} />
+                        </>
+                  )}
               </Stack.Navigator>
           </NavigationContainer>
       </NativeBaseProvider>
