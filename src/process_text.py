@@ -1,4 +1,4 @@
-import get_prof_transcript
+import get_transcript
 import spacy
 import cohere
 
