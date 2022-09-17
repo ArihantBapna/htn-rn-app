@@ -1,13 +1,12 @@
 import { signOut } from "@firebase/auth";
 import {
-  Button,
-  Box,
-  useToast,
-  Center,
-  ScrollView,
-  Heading,
-  Text,
-  HStack,
+    Button,
+    Box,
+    useToast,
+    Center,
+    ScrollView,
+    Heading,
+    HStack, Icon, IconButton,
 } from "native-base";
 import { auth, db } from "../../firebase";
 import { Audio } from "expo-av";
@@ -18,6 +17,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { Linking } from "react-native";
 import { useCollection } from "react-firebase-hooks/firestore";
+import {Ionicons} from "@expo/vector-icons";
 
 export function HomePage() {
   const toast = useToast();
@@ -146,7 +146,8 @@ export function HomePage() {
                 my={3}
               >
                 <Heading>{recording.name}</Heading>
-                <Button
+                <IconButton
+                icon={<Ionicons name="download" size={24} color="black" />}
                   onPress={() => {
                     Linking.openURL(recording.url)
                       .then()
@@ -158,8 +159,7 @@ export function HomePage() {
                       });
                   }}
                 >
-                  Open
-                </Button>
+                </IconButton>
               </HStack>
             );
           })}
