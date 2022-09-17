@@ -14,12 +14,13 @@ co = cohere.Client(api_key)
 
 def get_prof_data(url):
     """Returns the structured data of the prof's transcript."""
-    speaker_to_str = get_transcript_from_url()
+    speaker_to_str = get_transcript_from_url(url)
     transcript = json_to_lst(speaker_to_str["A"])
-    entities = speaker_to_str['entities?']
+    print(speaker_to_str)
+    entities = speaker_to_str["entities"]
     embedding = co.embed(texts=transcript, model="large", truncate="RIGHT").embeddings
     chapters = speaker_to_str["chapters"]  # (gist, headline, summary)
-    return embedding, transcript, entities, chapters
+    return transcript, embedding, entities, chapters
 
 
 def json_to_lst(text_content: str):
@@ -29,8 +30,6 @@ def json_to_lst(text_content: str):
     nlp = English()  # just the language with no pipeline
     nlp.add_pipe("sentencizer")
     doc = nlp(text_content)
-    sentences = [x for x in doc.sents]
-    assert sentences == [str(x) for x in doc.sents]  # sanity check
     transcript = []
     for sentence in doc.sents:
         transcript.append(sentence.text)
@@ -48,15 +47,16 @@ def get_titles_from_chapters(chapter: Tuple[str]) -> str:
 # options for ANN "angular", "euclidean", "manhattan", "hamming", or "dot"
 def get_similar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
     """Returns the top n similar sentences to each headline."""
-    phrases_to_vectors = dict(
-        zip(prof_transcript, prof_embeddings)
-    )  # map our phrases to embeddings
+    assert len(prof_embeddings) == len(prof_transcript)
+    phrases_to_vectors = {}
+    for sentence in prof_transcript:
+        phrases_to_vectors[sentence] = prof_embeddings[0]  # map our phrases to embeddings
 
     seen = set()  # seen phrases, prevent duplicate similar sentences
     similar_sentences = {}  # key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
 
     search_index = annoy.AnnoyIndex(
-        prof_embeddings.shape[1], "angular"
+        len(prof_embeddings[0]), "angular"
     )  # build ANN search tree
     for i in range(len(prof_embeddings)):
         search_index.add_item(i, prof_embeddings[i])
@@ -74,15 +74,15 @@ def get_similar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
     for i in range(n):
         for headline in headlines:
             top = search_index.get_nns_by_vector(similar_sentences[headline][0][0], 1)[0]
-            if top in seen:
+            if prof_transcript[top] in seen:
                 j = 1
                 while top in seen:
                     top = search_index.get_nns_by_vector(
                         similar_sentences[headline][0][0], j)[j]
                     j += 1
-            seen.add(top)
-            similar_sentences[headline][1] += top
-            similar_sentences[headline][2] += phrases_to_vectors[top]
+            seen.add(prof_transcript[top])
+            similar_sentences[headline][1].append(prof_transcript[top])
+            similar_sentences[headline][2].append(prof_embeddings[top])
 
     return similar_sentences
 
@@ -91,8 +91,8 @@ def get_flashcards(url) -> Set[Flashcard]:
     """Returns a set of flashcards for the given url."""
     # get the transcript and relevant data
     prof_data = get_prof_data(url)  # (transcript, embeddings, entities, chapters)
-    prof_transcript = prof_data[0]
-    prof_embeddings = prof_data[1]
+    prof_transcript = prof_data[0]  # list[str]
+    prof_embeddings = prof_data[1]  #
     entities = prof_data[2]
     chapters = prof_data[3]
     # get the chapters, get the unique titles from each chapter

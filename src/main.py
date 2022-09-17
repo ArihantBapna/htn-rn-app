@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 from flask import request
+from flask_cors import CORS
 from load_audio import get_response
 from get_transcript import get_transcript, get_transcript_from_url
 from load_audio import get_response_from_url
@@ -10,6 +11,7 @@ from get_visualization import visualize_data
 import json
 
 app = Flask(__name__)
+CORS(app)
 
 filename = "Asking Harvard Students If They Ever Sleep.mp3"
 

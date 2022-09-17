@@ -29,6 +29,12 @@ def get_transcript_from_url(url):
     for chapter in response_json['chapters']:
         speaker_to_str['chapters'].append((chapter['gist'], chapter['headline'], chapter['summary']))
 
+    speaker_to_str['entities'] = set()
+    for entity in response_json['entities']:
+        if entity['entity_type'] in {'person_name', 'location', 'email_address', 'date', 'event', 'religion',
+                                     'political_affiliation'}:
+            speaker_to_str['entities'].add(entity['text'])
+
     print(speaker_to_str)
     return speaker_to_str
 
@@ -68,5 +74,10 @@ def get_transcript(file):
             (chapter["gist"], chapter["headline"], chapter["summary"])
         )
 
-    # print(speaker_to_str)
+    speaker_to_str['entities'] = set()
+    for entity in response_json['entities']:
+        if entity['entity_type'] in {'person_name', 'location', 'email_address', 'date', 'event', 'religion',
+                                     'political_affiliation'}:
+            speaker_to_str['entities'].add(entity['text'])
+
     return speaker_to_str
