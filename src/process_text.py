@@ -13,7 +13,9 @@ def get_prof_data(filename):
     speaker_to_str = get_transcript(filename)
     transcript = json_to_lst(speaker_to_str["A"])
     # entities = speaker_to_str['entities?']
-    embedding = co.embed(texts=prof_transcript, model="large", truncate="RIGHT").embeddings
+    embedding = co.embed(
+        texts=prof_transcript, model="large", truncate="RIGHT"
+    ).embeddings
     chapters = speaker_to_str["chapters"]  # (gist, headline, summary)
     return (embedding, transcript, entities, chapters)
 
@@ -32,17 +34,22 @@ def json_to_lst(text_content: str):
 def get_titles_from_chapters(chapter: Tuple[str]) -> str:
     # get the unique keywords for each flashcard from the chapter
     # Query LLM here to give me the key idea based on the chapter gist, summary, and headline
-    return
+    # ironing out the kinks in prompt generation for now keep it simple and just return the gist
+    return chapter[0]
 
 
 # options for ANN "angular", "euclidean", "manhattan", "hamming", or "dot"
 def get_similiar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
-    phrases_to_vectors = dict(zip(prof_transcript, prof_embeddings))  # map our phrases to embeddings
+    phrases_to_vectors = dict(
+        zip(prof_transcript, prof_embeddings)
+    )  # map our phrases to embeddings
 
     seen = set()  # seen phrases, prevent duplicate similar sentences
-    similiar_sentences = set()  # key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
+    similiar_sentences = set() # key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
 
-    search_index = AnnoyIndex(prof_embeddings.shape[1], "angular")  # build ANN search tree
+    search_index = AnnoyIndex(
+        prof_embeddings.shape[1], "angular"
+    )  # build ANN search tree
     for i in range(len(prof_embedding)):
         search_index.add_item(i, prof_embeddings[i])
     search_index.build(10)  # 10 trees
@@ -51,7 +58,9 @@ def get_similiar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
 
     # get the similarity between prof and headline embedding
     for headline in headlines:
-        headline_embedding = co.embed(texts=[headline], model="large", truncate="RIGHT").embeddings
+        headline_embedding = co.embed(
+            texts=[headline], model="large", truncate="RIGHT"
+        ).embeddings
         similiar_sentences[headline] = (headline_embedding, [], [])
 
     for i in range(n):
@@ -60,7 +69,8 @@ def get_similiar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
             if top in seen:
                 j = 1
                 while top in seen:
-                    top = search_index.get_nns_by_vector(similar_sentences[headline][0][0], j)[j]
+                    top = search_index.get_nns_by_vector(
+                        similar_sentences[headline][0][0], j)[j]
                     j += 1
             seen.add(top)
             similar_sentences[headline][1] += top
@@ -69,7 +79,7 @@ def get_similiar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
     return similar_sentences
 
 
-def get_flashcards() -> Set[Flashcard]:
+def get_flashcards(filename) -> Set[Flashcard]:
     # get the transcript and relevant data
     prof_data = get_prof_data(filename)  # (transcript, embeddings, entities, chapters)
     prof_transcript = prof_data[0]
@@ -84,7 +94,25 @@ def get_flashcards() -> Set[Flashcard]:
         prof_transcript, prof_embeddings, headlines
     )
     # ^^^ key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
-
+    flashcards = set()
+    for t in titles:
+        sents = "\n".join(similiar_sentences[1])
+        back = f"{headline}\n{sents}"
+        embedding = co.embed(texts=[back], model="large", truncate="RIGHT").embeddings
+        flashcards.add(
+            Flashcard(
+                t,
+                back,
+                chapters[0],
+                None,
+                None,
+                headline,
+                similiar_sentences[0],
+                similiar_sentences,
+                embeddings[0],
+                None,
+            )
+        )
     # init flashcard: need front: str
     # back: str
     # gist: str
