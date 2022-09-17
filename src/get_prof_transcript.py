@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from load_audio import get_response
 from tqdm import tqdm
 import spacy
+import re
 
 filename = "Asking Harvard Students If They Ever Sleep.mp3"
 
@@ -18,11 +19,11 @@ def generate_prof_transcript(file):
         if d['speaker'] not in speaker_to_str:
             speaker_to_str[d['speaker']] = d['text']
             if d['speaker'] != 'A':
-                speaker_to_str['A'] += ' (' + d['speaker'] + ') '  # marking who's Q it was
+                speaker_to_str['A'] += f'(speaker: {d["speaker"]})'  # marking who's Q it was
         else:
             speaker_to_str[d['speaker']] += ('\n' + d['text'])
     print(speaker_to_str)
-    return f"{speaker_to_str['A']}"
+    return speaker_to_str
 
 
 def get_prof_embedding(speaker_to_str):
@@ -44,8 +45,9 @@ def get_prof_embedding(speaker_to_str):
 def json_to_lst(text_content: str):
     # assumption: this is the prof's transcript
     nlp = spacy.load("en_core_web_sm", disable=["ner"])
+    text_content = re.sub("\(.*\)", '', text_content)
     doc = nlp(text_content)
-    sentences = [str(x) for x in doc.sents]
-    print(sentences)
+    sentences = [str(sent) for sent in doc.sents]
+    print(len(sentences))
     return sentences
 
