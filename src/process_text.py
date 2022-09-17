@@ -13,9 +13,7 @@ def get_prof_data(filename):
     speaker_to_str = get_transcript(filename)
     transcript = json_to_lst(speaker_to_str["A"])
     # entities = speaker_to_str['entities?']
-    embedding = co.embed(
-        texts=prof_transcript, model="large", truncate="RIGHT"
-    ).embeddings
+    embedding = co.embed(texts=prof_transcript, model="large", truncate="RIGHT").embeddings
     chapters = speaker_to_str["chapters"]  # (gist, headline, summary)
     return (embedding, transcript, entities, chapters)
 
@@ -53,9 +51,7 @@ def get_similiar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
 
     # get the similarity between prof and headline embedding
     for headline in headlines:
-        headline_embedding = co.embed(
-            texts=[headline], model="large", truncate="RIGHT"
-        ).embeddings
+        headline_embedding = co.embed(texts=[headline], model="large", truncate="RIGHT").embeddings
         similiar_sentences[headline] = (headline_embedding, [], [])
 
     for i in range(n):
