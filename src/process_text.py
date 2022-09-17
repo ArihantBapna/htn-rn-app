@@ -1,5 +1,5 @@
 from get_transcript import get_transcript
-from spacy.lang.en import English
+import spacy
 import re
 import cohere
 import annoy
@@ -19,7 +19,9 @@ def get_prof_embedding():
 
 def json_to_lst(text_content: str):
     # assumption: this is the prof's transcript
-    tokenizer = nlp.tokenizer
+    nlp = English()  # just the language with no pipeline
+    nlp.add_pipe("sentencizer")
+    doc = nlp(text_content)
     text_content = re.sub(r"\(.*\)", "", text_content)
     doc = tokenizer(text_content)
     sentences = [str(x) for x in doc.sents]

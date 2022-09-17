@@ -11,11 +11,11 @@ class Flashcard:
     _headline_embedding: list
     _embedding: list
 
-    def __init__(self, front, back, gist, first, second, headline_str, headline_embedding, embedding):
+    def __init__(self, front, back, gist, first, second, headline, headline_embedding, embedding):
         self.front = front
         self.back = back
         self.gist = gist
-        self.headline = headline_str
+        self.headline = headline
         self._headline_embedding = headline_embedding
         self._embedding = embedding
         self.first = first
