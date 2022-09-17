@@ -1,11 +1,12 @@
-import { Text, View } from 'react-native';
+import {Text, View} from "react-native";
 
-
+export const SqView = View as any;
+export const SqText = Text as any;
 
 export function HomePage(){
     return (
-        <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "white"}}>
-            <Text style={{}}>Home Screen</Text>
-        </View>
+        <SqView className="flex-1 items-center justify-center bg-white">
+            <SqText className={"text-red-700"}>Home Screen</SqText>
+        </SqView>
     );
 }
