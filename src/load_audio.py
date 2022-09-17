@@ -22,7 +22,15 @@ def get_response():
         endpoint = "https://api.assemblyai.com/v2/transcript"
         headers['content-type'] = "application/json"
         print(headers)
-        json = {"audio_url": res['upload_url']}
+        json = {
+            "audio_url": res['upload_url'],
+            "disfluencies": True,  # TODO: test on audio file that contains filler
+            "speaker_labels": True,  # TODO: test on audio file that (a) has multiple speakers one after the other;
+                                    # TODO: (b) overlapping speakers
+            "auto_highlights": True,  # TODO: test
+            "auto_chapters": True,   # TODO: test
+            "entity_detection": True,  # TODO: test
+        }
         response = requests.post(endpoint, json=json, headers=headers)
         print(response.json())  # begin transcript process
 
