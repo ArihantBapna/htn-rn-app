@@ -4,8 +4,8 @@ import {
     NativeBaseProvider,
 } from "native-base";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import HomePage from "./pages/Home";
 import {NavigationContainer} from "@react-navigation/native";
+import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 
 // Define the config
@@ -28,7 +28,7 @@ export default function App() {
       <NativeBaseProvider>
           <NavigationContainer>
               <Stack.Navigator>
-                  <Stack.Screen name="home" component={HomePage} options={{headerShown: false}} />
+                  <Stack.Screen name={"login"} component={LoginPage} options={{headerShown: false}} />
                   <Stack.Screen name={"register"} component={RegisterPage} options={{headerShown: false}} />
               </Stack.Navigator>
           </NavigationContainer>

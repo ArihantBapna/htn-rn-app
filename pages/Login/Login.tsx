@@ -15,7 +15,7 @@ import React, {useState} from "react";
 import {auth} from "../../firebase";
 import {useNavigation} from "@react-navigation/native";
 
-export function HomePage(){
+export function LoginPage(){
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const toast = useToast();
