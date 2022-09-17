@@ -39,18 +39,12 @@ def get_titles_from_chapters(chapter: Tuple[str]) -> str:
 
 # options for ANN "angular", "euclidean", "manhattan", "hamming", or "dot"
 def get_similiar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
-    phrases_to_vectors = dict(
-        zip(prof_transcript, prof_embeddings)
-    )  # map our phrases to embeddings
+    phrases_to_vectors = dict(zip(prof_transcript, prof_embeddings))  # map our phrases to embeddings
 
     seen = set()  # seen phrases, prevent duplicate similar sentences
-    similiar_sentences = (
-        set()
-    )  # key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
+    similiar_sentences = set()  # key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
 
-    search_index = AnnoyIndex(
-        prof_embeddings.shape[1], "angular"
-    )  # build ANN search tree
+    search_index = AnnoyIndex(prof_embeddings.shape[1], "angular")  # build ANN search tree
     for i in range(len(prof_embedding)):
         search_index.add_item(i, prof_embeddings[i])
     search_index.build(10)  # 10 trees
