@@ -31,7 +31,7 @@ def get_entity_from_headline(headline: str):
     # get the entity from the headline
     return
 
-def get_similiar_sentences(prof, misc):
+def get_similiar_sentences(prof, compar):
     # get the similarity between prof and student embeddings
     # return the most similar sentences
     return
