@@ -1,14 +1,16 @@
-import get_transcript
+from get_transcript import generate_transcript
 import spacy
 import re
 import cohere
+
+filename = "Asking Harvard Students If They Ever Sleep.mp3"
 
 
 def get_prof_embedding(speaker_to_str: dict):
     '''Returns the embedding of the prof's transcript.'''
     api_key = "2LMDM3GEVPLvDVoSQlm4bV5W4EbKn2ZW0jgl6zEM"
     co = cohere.Client(api_key)
-    transcript = generate_prof_transcript(filename)
+    transcript = generate_transcript(filename)
     # get lst of speaker A's sentences
     prof = json_to_lst(speaker_to_str['A'])
 
@@ -27,9 +29,11 @@ def json_to_lst(text_content: str):
     print(sentences)
     return sentences
 
+
 def get_entity_from_headline(headline: str):
     # get the entity from the headline
     return
+
 
 def get_similiar_sentences(prof, compar):
     # get the similarity between prof and student embeddings
