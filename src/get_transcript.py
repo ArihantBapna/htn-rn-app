@@ -3,7 +3,7 @@ from load_audio import get_response
 filename = "Asking Harvard Students If They Ever Sleep.mp3"
 
 
-def generate_transcript(file):
+def get_transcript(file):
     # assumption: speaker A is the prof <3
     response_json = get_response(file)
     speakers = response_json['utterances']

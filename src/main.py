@@ -2,11 +2,7 @@ import os
 
 from flask import Flask
 from load_audio import get_response
-<<<<<<< HEAD
-from get_prof_transcript import generate_prof_transcript
-=======
-from get_transcript import generate_prof_transcript
->>>>>>> cef976c3555cfffe79133909c9357ab8d09c3d67
+from get_transcript import get_transcript
 
 app = Flask(__name__)
 
