@@ -1,15 +1,28 @@
 import { signOut } from "@firebase/auth";
-import {Button, Box, useToast, Center, ScrollView, Heading} from "native-base";
+import {
+  Button,
+  Box,
+  useToast,
+  Center,
+  ScrollView,
+  Heading,
+  Text,
+  HStack,
+} from "native-base";
 import { auth, db } from "../../firebase";
 import { Audio } from "expo-av";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Recording } from "expo-av/build/Audio/Recording";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { Linking } from "react-native";
+import { useCollection } from "react-firebase-hooks/firestore";
 
 export function HomePage() {
   const toast = useToast();
   const [recording, setRecording] = useState<Recording>();
+  const [recordings, setRecordings] = useState<any[]>([]);
 
   async function startRecording() {
     try {
@@ -29,6 +42,7 @@ export function HomePage() {
 
   function callTheApi(fileName: string, fileUrl: string, userId: string) {
     // Do shit with the file data
+    console.log(fileName, fileUrl, userId);
   }
 
   async function stopRecording() {
@@ -40,42 +54,31 @@ export function HomePage() {
         r.blob().then((blob) => {
           const storage = getStorage();
           const time = new Date().getMilliseconds().toString();
+          const extension = `${blob.type.split("/")[1]}`;
           const storageRef = ref(
             storage,
-            `${auth.currentUser?.uid}/${time}.${blob.type.split("/")[1]}`
+            `${auth.currentUser?.uid}/${time}.${extension}`
           );
           uploadBytes(storageRef, blob)
             .then((snapshot) => {
+              console.log("Uploaded this shit");
+              toast.show({
+                title: "Uploaded Audio file successfully",
+                backgroundColor: "green.500",
+              });
               getDownloadURL(snapshot.ref)
                 .then(async (url) => {
+                  console.log("Found the url");
                   await setDoc(
-                    doc(
-                      db,
-                      `${auth.currentUser?.uid}`,
-                      `${time}.${blob.type.split("/")[1]}`
-                    ),
+                    doc(db, `${auth.currentUser?.uid}`, `${time}.${extension}`),
                     {
                       flashcards: "[]",
                       url: url,
+                      name: `${time}.${extension}`,
                       userid: auth.currentUser?.uid,
                     }
-                  )
-                    .then(() => {
-                      toast.show({
-                        title: "Uploaded Audio file successfully",
-                        backgroundColor: "green.500",
-                      });
-                      let fileName = `${time}.${blob.type.split("/")[1]}`;
-                      let fileUrl = url;
-                      let userId = auth.currentUser?.uid || "";
-                      callTheApi(fileName, fileUrl, userId);
-                    })
-                    .catch((err) => {
-                      toast.show({
-                        title: "Error setting data",
-                        backgroundColor: "red.500",
-                      });
-                    });
+                  );
+                  console.log("Done");
                 })
                 .catch((err) => {
                   toast.show({
@@ -95,12 +98,71 @@ export function HomePage() {
     }
   }
 
+  const [value, loading, error] = useCollection(
+    collection(db, `${auth.currentUser?.uid}`)
+  );
+
+  useEffect(() => {
+    if (value && !loading) {
+      let newDocs: any[] = [];
+      value.docs.forEach((doc) => {
+        newDocs.push(doc.data());
+      });
+      setRecordings(newDocs);
+    }
+  }, [value, loading]);
+
   return (
     <Box height={"100%"} px={8} safeArea>
-      <Heading>Your Recordings</Heading>
-      <Center>
-        <ScrollView w={"100%"} style={{display: "flex", flexGrow: 1, flexBasis: "90%", flexDirection: "column"}}>
-          <Heading fontSize="xl">Cyan</Heading>
+      <Heading textAlign={"center"}>Your Recordings</Heading>
+
+      <Center my={4}>
+        <HStack justifyContent={"space-between"} alignItems={"center"}>
+          <Center>
+            {recording == null ? (
+              <Button onPress={startRecording} backgroundColor={"red.500"}>
+                Start Recording
+              </Button>
+            ) : (
+              <Button onPress={stopRecording} backgroundColor={"green.500"}>
+                Stop Recording
+              </Button>
+            )}
+          </Center>
+        </HStack>
+      </Center>
+
+      <Center my={4}>
+        <ScrollView
+          w={"100%"}
+          style={{ display: "flex", flexGrow: 1, flexDirection: "column" }}
+        >
+          {recordings.map((recording, index) => {
+            return (
+              <HStack
+                key={index}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+                my={3}
+              >
+                <Heading>{recording.name}</Heading>
+                <Button
+                  onPress={() => {
+                    Linking.openURL(recording.url)
+                      .then()
+                      .catch((err) => {
+                        toast.show({
+                          title: "Error opening file",
+                          backgroundColor: "red.500",
+                        });
+                      });
+                  }}
+                >
+                  Open
+                </Button>
+              </HStack>
+            );
+          })}
         </ScrollView>
       </Center>
       <Button
