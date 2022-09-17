@@ -32,6 +32,7 @@ def get_transcript_from_url(url):
     print(speaker_to_str)
     return speaker_to_str
 
+
 def get_transcript(file):
     # assumption: speaker A is the prof <3
     response_json = get_response(filename)

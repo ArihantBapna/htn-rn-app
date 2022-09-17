@@ -1,5 +1,5 @@
 from typing import Tuple, Set
-from get_transcript import get_transcript
+from get_transcript import get_transcript_from_url
 from spacy.lang.en import English
 import re
 import cohere
@@ -7,14 +7,14 @@ import annoy
 from flashcard import Flashcard
 
 
-filename = "Asking Harvard Students If They Ever Sleep.mp3"
+# filename = "Asking Harvard Students If They Ever Sleep.mp3"
 api_key = "2LMDM3GEVPLvDVoSQlm4bV5W4EbKn2ZW0jgl6zEM"
 co = cohere.Client(api_key)
 
 
-def get_prof_data(filename):
+def get_prof_data(url):
     """Returns the structured data of the prof's transcript."""
-    speaker_to_str = get_transcript(filename)
+    speaker_to_str = get_transcript_from_url()
     transcript = json_to_lst(speaker_to_str["A"])
     entities = speaker_to_str['entities?']
     embedding = co.embed(texts=transcript, model="large", truncate="RIGHT").embeddings
@@ -84,9 +84,9 @@ def get_similar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
     return similar_sentences
 
 
-def get_flashcards(filename) -> Set[Flashcard]:
+def get_flashcards(url) -> Set[Flashcard]:
     # get the transcript and relevant data
-    prof_data = get_prof_data(filename)  # (transcript, embeddings, entities, chapters)
+    prof_data = get_prof_data(url)  # (transcript, embeddings, entities, chapters)
     prof_transcript = prof_data[0]
     prof_embeddings = prof_data[1]
     entities = prof_data[2]

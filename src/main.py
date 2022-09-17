@@ -5,6 +5,8 @@ from flask import request
 from load_audio import get_response
 from get_transcript import get_transcript, get_transcript_from_url
 from load_audio import get_response_from_url
+from process_text import get_flashcards
+from get_visualization import visualize_data
 import json
 
 app = Flask(__name__)
@@ -22,23 +24,32 @@ def load_audio_from_url():
     url = json.loads(request.data).get('url')
     return get_response_from_url(url)
 
+
 @app.route("/get_transcript")
 def load_audio():
     return get_response(filename)
 
+
 @app.route("/get_prof_transcript")
-def get_prof_transcript():
+def get_prof_transcript_url():
     url = json.loads(request.data).get('url')
     return get_transcript_from_url(url)
 
+
 @app.route("/prof_transcript")
-def prof_transcript():
+def get_prof_transcript():
     return get_transcript(filename)
 
 
-@app.route("/test")
-def test():
-    return
+@app.route("/process_text")
+def process_text():
+    return get_flashcards("https://firebasestorage.googleapis.com/v0/b/htn-rn-app.appspot.com/o/oJDN2chA8uM6BzbAzbrIR4wisD22%2F166.x-m4a?alt=media&token=55c79b8e-73d9-4b1e-8a71-89ad1a37ca1a")
+
+
+@app.route("/get_visualization")
+def get_visualization():
+    flashcards = get_flashcards("https://firebasestorage.googleapis.com/v0/b/htn-rn-app.appspot.com/o/oJDN2chA8uM6BzbAzbrIR4wisD22%2F166.x-m4a?alt=media&token=55c79b8e-73d9-4b1e-8a71-89ad1a37ca1a")
+    return visualize_data(flashcards)
 
 
 if __name__ == "__main__":

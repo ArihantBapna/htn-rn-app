@@ -5,12 +5,11 @@ import numpy as np
 import pandas as pd
 from collections import defaultdict
 
-filename = "Asking Harvard Students If They Ever Sleep.mp3"
+# filename = "Asking Harvard Students If They Ever Sleep.mp3"
 
 
-def visualize_data():
+def visualize_data(flashcards):
     # average flashcards
-    flashcards = get_flashcards()
     flashcard_vectors = {}
     for flashcard in flashcards:
         embeddings_to_avg = [np.array(flashcard.headline)]
