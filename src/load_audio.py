@@ -28,10 +28,8 @@ def get_response(file):
             "disfluencies": True,  # TODO: test on audio file that contains filler
             "speaker_labels": True,  # TODO: test on audio file that (a) has multiple speakers one after the other;
                                     # TODO: (b) overlapping speakers
-            "auto_highlights": True,  # TODO: test
             "auto_chapters": True,   # TODO: test
             "entity_detection": True,  # TODO: test
-            "iab_categories": True  # TODO: test
         }
         response = requests.post(endpoint, json=json, headers=headers)
         print(response.json())  # begin transcript process
