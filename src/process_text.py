@@ -6,11 +6,11 @@ import cohere
 filename = "Asking Harvard Students If They Ever Sleep.mp3"
 
 
-def get_prof_embedding(speaker_to_str: dict):
-    '''Returns the embedding of the prof's transcript.'''
+def get_prof_embedding():
+    """Returns the embedding of the prof's transcript."""
     api_key = "2LMDM3GEVPLvDVoSQlm4bV5W4EbKn2ZW0jgl6zEM"
     co = cohere.Client(api_key)
-    transcript = generate_transcript(filename)
+    speaker_to_str = generate_transcript(filename)
     # get lst of speaker A's sentences
     prof = json_to_lst(speaker_to_str['A'])
 
