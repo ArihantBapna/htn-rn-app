@@ -10,3 +10,4 @@ numpy
 flask_cors
 annoy
 scipy
+dotenv

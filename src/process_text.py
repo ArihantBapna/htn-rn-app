@@ -6,10 +6,9 @@ import json
 import cohere
 import annoy
 from flashcard import Flashcard
+from main import cohere_api
 
-
-api_key = "2LMDM3GEVPLvDVoSQlm4bV5W4EbKn2ZW0jgl6zEM"
-co = cohere.Client(api_key)
+co = cohere.Client(cohere_api)
 
 
 def get_prof_data(url):
