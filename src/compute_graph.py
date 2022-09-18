@@ -1,8 +1,7 @@
 # compute_graph.py
+import scipy.spatial
 from typing import Dict, Set, List
 from flashcard import Flashcard, Node, Graph
-import scipy
-
 # compute the top 5 edges for every node into a table with sim score rel to other nodes
 # sort according to sim score
 # going down in the table, attempt to add a given edge
@@ -11,13 +10,13 @@ import scipy
 # else, add the edge to set of edges and update each node. if node is satisfied,
 # put it in DONE and remove from AVAILABLE
 # when all nodes are in DONE we are done
-# if table exhausted continue running with expanded table (2x edges per node) 
+# if table exhausted continue running with expanded table (2x edges per node)
 #      (make sure to ignore edges already in set)
 
 
 def compute_graph(flashcards: List[Flashcard]) -> Graph:
     """Construct a graph of nodes from a list of Flashcards."""
-    graph = Graph() 
+    graph = Graph()
     for flashcard in flashcards:
         graph.add_node(Node(flashcard, set(), set()))
     sim_max = 5
@@ -70,7 +69,8 @@ def compute_sim_scores(graph, depth_limit):
         depth = 0
         for other_node in graph.nodes:
             if node.flashcard.front != other_node.flashcard.front:
-                cos_sim = 1 - scipy.spatial.distance.cosine(node.flashcard.get_embedding(), other_node.flashcard.get_embedding())
+                cos_sim = 1 - scipy.spatial.distance.cosine(node.flashcard.get_embedding(),
+                other_node.flashcard.get_embedding())
                 sim_scores.add(
                     (node, other_node, cos_sim)
                 )

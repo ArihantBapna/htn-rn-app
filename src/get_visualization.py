@@ -1,5 +1,5 @@
 from typing import Dict, Set, List
-import scipy
+import scipy.spatial
 from flashcard import Flashcard, Node
 import numpy as np
 import pandas as pd

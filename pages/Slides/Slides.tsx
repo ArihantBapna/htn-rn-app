@@ -37,7 +37,7 @@ export function SlidesPage({ route, navigation }: any){
                 <FlingGestureHandler direction={Directions.LEFT} onHandlerStateChange={({nativeEvent}) => {
                     if (nativeEvent.state === State.ACTIVE) {
                         if (node["first"]){
-                            setNode(tree[node["first"]]);
+                            setNode(JSON.parse(tree[node["first"]]));
                             setMainText(node["first"])
                         }
                     }
@@ -47,7 +47,7 @@ export function SlidesPage({ route, navigation }: any){
                             console.log("swiped right");
                             if (node["second"]){
                                 console.log("second exists");
-                                setNode(tree[node["second"]]);
+                                setNode(JSON.parse(tree[node["second"]]));
                                 setMainText(node["second"])
                             }
                         }
