@@ -7,6 +7,7 @@ import HomePage from "./pages/Home";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import TranscriptPage from "./pages/Transcript";
+import SlidesPage from "./pages/Slides";
 
 // Define the config
 const config = {
@@ -48,6 +49,7 @@ export default function App() {
                 component={TranscriptPage}
                 options={{ headerShown: false }}
               />
+              <Stack.Screen name={"slides"} component={SlidesPage} options={{headerShown: false}}/>
             </>
           ) : (
             <>

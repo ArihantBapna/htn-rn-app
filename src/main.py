@@ -50,6 +50,12 @@ def get_visualization():
         print(f"\n\n{flashcard.flashcard_to_json()}\n\n")
     return visualize_data(flashcards)
 
+@app.route("/get_visualization_url", methods=["POST"])
+def get_visualization_url():
+    url = json.loads(request.data).get('url')
+    flashcards = get_flashcards(url)
+    my_data = visualize_data(flashcards)
+    return my_data
 
 @app.route("/get_graph")
 def get_graph():

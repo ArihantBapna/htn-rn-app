@@ -46,16 +46,16 @@ export function TranscriptPage({ route, navigation }: any) {
       <Box height={"100%"} px={8} safeArea>
         <Heading textAlign={"center"}></Heading>
 
-        <Center my={4}>
+        <Center>
           {!transcript ? (
             <Heading>Transcript is loading...</Heading>
           ) : (
             <>
-              <Heading mb={5}>Your Transcript</Heading>
-              <ScrollView>
+              <Heading>Your Transcript</Heading>
+              <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
                 {transcript['speaker_lst'].map((speaker : any, index : number) => {
                   return (
-                      <Box key={index} my={4}>
+                      <Box key={index}>
                         <Heading>{speaker}:</Heading>
                         <Heading>{transcript[speaker]}</Heading>
                       </Box>

@@ -16,8 +16,7 @@ import scipy
 
 
 def compute_graph(flashcards: List[Flashcard]) -> Graph:
-    """Construct a graph of nodes from a list of Flashcards.
-    """
+    """Construct a graph of nodes from a list of Flashcards."""
     graph = Graph() 
     for flashcard in flashcards:
         graph.add_node(Node(flashcard, set(), set()))
@@ -54,7 +53,7 @@ def compute_graph(flashcards: List[Flashcard]) -> Graph:
                 available.remove(edge[1])
         sim_max *= 2
 
-    return str(graph.graph_to_json())
+    return graph.graph_to_json()
 
 
 def compute_sim_scores(graph, depth_limit):
@@ -63,7 +62,7 @@ def compute_sim_scores(graph, depth_limit):
     for node in graph.nodes:
         depth = 0
         for other_node in graph.nodes:
-            if node != other_node:
+            if node.flashcard.front != other_node.flashcard.front:
                 cos_sim = 1 - scipy.spatial.distance.cosine(node.flashcard.get_embedding(), other_node.flashcard.get_embedding())
                 sim_scores.add(
                     (node, other_node, cos_sim)
