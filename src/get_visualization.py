@@ -34,7 +34,7 @@ def visualize_data(flashcards: List[Flashcard]):
 
     # rank nodes by # of input nodes
     # return rank_nodes(nodes)
-    return [node.flashcard.flashcard_to_json() for node in nodes]
+    return {flashcard.front: flashcard.flashcard_to_json() for flashcard in flashcards}
 
 
 def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]) -> None:
