@@ -90,12 +90,12 @@ class Graph:
         self.nodes.append(node)
     
     def add_edge(self, edge):
-            edge[0].point_out.add(edge[1])
-            edge[1].point_in.add(edge[0])
-            # update first and/or second of node
-            if edge[0].flashcard.first is None:
-                edge[0].flashcard.first = edge[1].flashcard.front
-            elif edge[0].flashcard.second is None:
-                edge[0].flashcard.second = edge[1].flashcard.front
- 
-            self.edges.append(edge)
+        edge[0].point_out.add(edge[1])
+        edge[1].point_in.add(edge[0])
+        # update first and/or second of node
+        if edge[0].flashcard.first is None:
+            edge[0].flashcard.first = edge[1].flashcard.front
+        elif edge[0].flashcard.second is None:
+            edge[0].flashcard.second = edge[1].flashcard.front
+
+        self.edges.append(edge)
