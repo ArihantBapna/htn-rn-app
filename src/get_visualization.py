@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 from collections import defaultdict
 
+# filename = "Asking Harvard Students If They Ever Sleep.mp3"
+
 
 def visualize_data(flashcards):
     # average flashcards
@@ -31,7 +33,7 @@ def visualize_data(flashcards):
     return rank_nodes(nodes)
 
 
-def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]):
+def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]) -> None:
     """Assign .first and .second Flashcards to every Flashcard in flashcard_vectors.
 
     Equation: Cos(x, y) = x . y / ||x|| * ||y||
