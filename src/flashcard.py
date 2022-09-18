@@ -15,8 +15,17 @@ class Flashcard:
     _embedding: list
     _average_embedding: Union[None, np.array]
 
-    def __init__(self, front, back, first, second, headline_str, headline_embedding, embedding,
-                 average_embedding):
+    def __init__(
+        self,
+        front,
+        back,
+        first,
+        second,
+        headline_str,
+        headline_embedding,
+        embedding,
+        average_embedding,
+    ):
         self.front = front
         self.back = back
         self.headline = headline_str
@@ -40,7 +49,7 @@ class Flashcard:
 
     def flashcard_to_json(self):
         # Convert every flashcard to a json object, but don't include the embeddings
-        stripped = self.__dict__.copy() # copy the dict so we don't modify the original
+        stripped = self.__dict__.copy()  # copy the dict so we don't modify the original
         del stripped["_headline_embedding"]
         del stripped["_embedding"]
         del stripped["_average_embedding"]
@@ -61,9 +70,8 @@ class Node:
         self.flashcard = flashcard
         self.point_in = point_in
         self.point_out = point_out
-    
+
     def print_node(self):
-        # Print the node's flashcard json and the lists of points in and out
         print(self.flashcard.flashcard_to_json())
         print(f"Points in:{self.point_in})")
         print(f"Points out:{self.point_out})")
@@ -76,16 +84,16 @@ class NodeEncoder(JSONEncoder):
 
 class Graph:
     nodes: List[Node]
-    edges: List[Tuple[Node]]  # list of tuples of nodes actually
+    edges: List[Tuple[Node]]
 
-    def __init__(self, nodes = [], edges = []):
+    def __init__(self, nodes=[], edges=[]):
         self.nodes = nodes
         self.edges = edges
 
     def graph_to_json(self):
         """Converts graph to list of jsons.
         For every edge, if there is a node not seen before,
-        add it to the list of nodes then, when all edges done, 
+        add it to the list of nodes then, when all edges done,
         convert all nodes to json"""
         new_nodes = set()
         for e in self.edges:
@@ -93,10 +101,10 @@ class Graph:
                 new_nodes.add(e[0])
             if e[1] not in new_nodes:
                 new_nodes.add(e[1])
-        for n in new_nodes: # this is funky
+        for n in new_nodes:  # this is funky
             if n.flashcard.first is None and n.flashcard.second is None:
                 n.flashcard.first = new_nodes.elements().next().flashcard.front
-                
+
         return {n.flashcard.front: n.flashcard.flashcard_to_json() for n in new_nodes}
 
     def add_node(self, node):

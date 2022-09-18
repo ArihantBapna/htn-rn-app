@@ -1,13 +1,13 @@
 # compute_graph.py
+# could use some optimizations
 import scipy.spatial
 from typing import Dict, Set, List
 from flashcard import Flashcard, Node, Graph
 
 
-def compute_graph(flashcards: List[Flashcard]) -> Graph:
-    """Construct a graph of nodes from a list of Flashcards.""""
+def compute_graph(flashcards: List[Flashcard], sim_max = 5) -> Graph:
+    """Construct a graph of nodes from a list of Flashcards."""
     graph = Graph()
-    sim_max = 5
     for flashcard in flashcards:
         graph.add_node(Node(flashcard, set(), set()))
     done = set()
@@ -46,11 +46,10 @@ def compute_sim_scores(graph, depth_limit):
         depth = 0
         for other_node in graph.nodes:
             if node.flashcard.front != other_node.flashcard.front:
-                cos_sim = 1 - scipy.spatial.distance.cosine(node.flashcard.get_embedding(),
-                other_node.flashcard.get_embedding())
-                sim_scores.add(
-                    (node, other_node, cos_sim)
+                cos_sim = 1 - scipy.spatial.distance.cosine(
+                    node.flashcard.get_embedding(), other_node.flashcard.get_embedding()
                 )
+                sim_scores.add((node, other_node, cos_sim))
             else:
                 continue
             depth += 1
