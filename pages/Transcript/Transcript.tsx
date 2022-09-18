@@ -9,6 +9,9 @@ import {
 } from "native-base";
 import { useEffect, useState } from "react";
 import axios from "axios";
+// @ts-ignore
+import image from "./assets/bg.png";
+import {ImageBackground, View} from "react-native";
 
 export function TranscriptPage({ route, navigation }: any) {
   const { recording } = route.params;
@@ -43,27 +46,35 @@ export function TranscriptPage({ route, navigation }: any) {
 
   return (
     <NativeBaseProvider>
-      <Box height={"100%"} px={8} safeArea>
-        <Center>
-          {!transcript ? (
-            <Heading>Transcript is loading...</Heading>
-          ) : (
-            <>
-              <Heading>Your Transcript</Heading>
-              <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-                {transcript['speaker_lst'].map((speaker : any, index : number) => {
-                  return (
-                      <Box key={index}>
-                        <Heading>{speaker}:</Heading>
-                        <Heading>{transcript[speaker]}</Heading>
-                      </Box>
-                  );
-                })}
-              </ScrollView>
-            </>
-          )}
-        </Center>
-      </Box>
+      <ImageBackground resizeMode='cover'  source={image} style={{width: "100%", height: "100%"}}>
+        <View style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center"
+        }}>
+          <Box height={"100%"} px={8} pt={8} safeArea>
+            <Center>
+              {!transcript ? (
+                <Heading>Transcript is loading...</Heading>
+              ) : (
+                <>
+                  <Heading>Your Transcript</Heading>
+                  <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+                    {transcript['speaker_lst'].map((speaker : any, index : number) => {
+                      return (
+                          <Box key={index}>
+                            <Heading>{speaker}:</Heading>
+                            <Heading>{transcript[speaker]}</Heading>
+                          </Box>
+                      );
+                    })}
+                  </ScrollView>
+                </>
+              )}
+            </Center>
+          </Box>
+        </View>
+      </ImageBackground>
     </NativeBaseProvider>
   );
 }
