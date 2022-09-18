@@ -1,4 +1,7 @@
 from typing import Dict, Set, List
+
+import scipy
+
 from flashcard import Flashcard, Node
 import numpy as np
 import pandas as pd
@@ -51,7 +54,7 @@ def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]) -> None:
             for other_front in flashcard_vectors:
                 other_vector = flashcard_vectors[other_front]
                 if flashcard != other_front:  # don't compare the same node to itself
-                    cos_val = cosine_similarity(flashcard_vector, other_vector)
+                    cos_val = 1 - scipy.spatial.distance.cosine(flashcard_vector, other_vector)
                     corresponding_similarities[other_front] = cos_val
 
             # get top two
@@ -63,19 +66,21 @@ def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]) -> None:
 
 
 def get_top_two_vectors(corresponding_similarities: Dict[Flashcard, np.array]):
-    first = ['', ]
-    second = ['', 0]
+    first = ['', -2]
+    second = ['', -2]
     print(f"corresponding_similarities: {len(corresponding_similarities)}")
-    for front in corresponding_similarities:
-        cos_val = corresponding_similarities[front]
-        print(f"{front}: {cos_val}")
+    for flashcard in corresponding_similarities:
+        cos_val = corresponding_similarities[flashcard]
+        print(f"{flashcard.front}: {cos_val}")
         if cos_val >= first[1]:
-            first = [front, cos_val]
+            temp = [first[0], first[1]]
+            first = [flashcard.front, cos_val]
+            second = temp
         elif cos_val >= second[1]:
-            second = [front, cos_val]
-    assert first != ['', 0]
-    assert second != ['', 0]
-    return first, second
+            second = [flashcard.front, cos_val]
+    assert first != ['', -2]
+    assert second != ['', -2]
+    return first[0], second[0]
 
 
 def initialize_nodes(flashcards: List[Flashcard], flashcard_dict: Dict[str, Flashcard]):
@@ -124,7 +129,8 @@ def rank_fan_nodes(lonely_node: Node, edges: Set[tuple]):
     for (fan_node, popular_node) in edges:
         fan_avg_embedding = fan_node.flashcard.get_average_embedding()
         lonely_avg_embedding = lonely_node.flashcard.get_average_embedding()
-        cos_val = cosine_similarity(fan_avg_embedding, lonely_avg_embedding)
+        cos_val = 1 - scipy.spatial.distance.cosine(fan_avg_embedding, lonely_avg_embedding)
+
         lst.append([fan_node, popular_node, cos_val])
 
     df = pd.DataFrame(lst)
