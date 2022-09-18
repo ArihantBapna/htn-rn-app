@@ -16,7 +16,6 @@ def get_prof_data(url):
     """Returns the structured data of the prof's transcript."""
     speaker_to_str = get_transcript_from_url(url)
     transcript = json_to_lst(speaker_to_str["A"])
-    print(speaker_to_str)
     entities = speaker_to_str["entities"]
     embedding = co.embed(texts=transcript, model="large", truncate="RIGHT").embeddings
     chapters = speaker_to_str["chapters"]  # (gist, headline, summary)
@@ -131,4 +130,4 @@ def get_flashcards(url):
     # _headline_embedding: list
     # _embedding: list
 
-    return list(flashcards)
+    return flashcards
