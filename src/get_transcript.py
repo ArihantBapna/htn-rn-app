@@ -27,9 +27,9 @@ def get_transcript_from_url(url):
                     print("There was an error processing the transcript")
         else:
             if speaker == "A":
-                speaker_to_str[speaker].append(f"\n{d['text']}")
+                speaker_to_str[speaker] += f"\n{d['text']}"
             else:
-                speaker_to_str[speaker].append(d["text"])
+                speaker_to_str[speaker] += f"{d['text']}"
                 speaker_to_str[
                     "A"
                 ] += f"(speaker: {d['speaker']})"  # marking who's Q it was

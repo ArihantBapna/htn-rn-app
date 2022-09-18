@@ -3,6 +3,7 @@ from typing import Dict, Set, List
 from flashcard import Flashcard, Node, Graph
 import numpy as np
 import pandas as pd
+import scipy
 from collections import defaultdict
 from sklearn.metrics.pairwise import cosine_similarity
 # compute the top 5 edges for every node into a table with sim score rel to other nodes
@@ -22,7 +23,7 @@ def compute_graph(flashcards: List[Flashcard]) -> Graph:
     """
     graph = Graph() 
     for flashcard in flashcards:
-        graph.add_node(flashcard)
+        graph.add_node(Node(flashcard, set(), set()))
     
     sim_max = 5
     # sort according to sim score
@@ -37,7 +38,7 @@ def compute_graph(flashcards: List[Flashcard]) -> Graph:
     done = set()
     available = set(graph.nodes)
     while len(available) > 0:
-        simscores = compute_sim_scores(graph, sim_max)
+        sim_scores = compute_sim_scores(graph, sim_max)
         df = pd.DataFrame(sim_scores)
         if df.size > 0:
             df.sort_values(by=2, axis=0)
@@ -57,7 +58,8 @@ def compute_graph(flashcards: List[Flashcard]) -> Graph:
                 available.remove(edge[0])
                 available.remove(edge[1])
         sim_max *= 2
-        
+    for edge in done:
+        graph.add_edge(edge)
     return str(graph.graph_to_json())
 
 
@@ -67,12 +69,15 @@ def compute_sim_scores(graph, depth_limit):
     for node in graph.nodes:
         depth = 0
         for other_node in graph.nodes:
+            if node != other_node:
+                cos_sim = 1 - scipy.spatial.distance.cosine(node.flashcard.get_embedding(), other_node.flashcard.get_embedding())
+                sim_scores.add(
+                    (node, other_node, cos_sim)
+                )
+            else:
+                continue
             depth += 1
             if depth > depth_limit:
                 break
-            if node != other_node:
-                sim_scores.add(
-                    (node, other_node, cosine_similarity(node.flashcard.get_embedding(),
-                     other_node.flashcard.get_embedding())))
 
     return sim_scores
