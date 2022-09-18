@@ -2,6 +2,7 @@ from typing import Tuple, Set
 from get_transcript import get_transcript_from_url
 from spacy.lang.en import English
 import re
+import json
 import cohere
 import annoy
 from flashcard import Flashcard
@@ -59,9 +60,6 @@ def get_similar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
         search_index.add_item(i, prof_embeddings[i])
     search_index.build(10)  # 10 trees
 
-    # search_index.save('transcript.ann') # we can save this tree if needed later
-
-    # get the similarity between prof and headline embedding
     for headline in headlines:
         headline_embedding = co.embed(
             texts=[headline], model="large", truncate="RIGHT"

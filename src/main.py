@@ -8,6 +8,7 @@ from get_transcript import get_transcript, get_transcript_from_url
 from load_audio import get_response_from_url
 from process_text import get_flashcards
 from get_visualization import visualize_data
+from compute_graph import compute_graph
 import json
 
 app = Flask(__name__)
@@ -63,7 +64,8 @@ def get_graph():
     flashcards = get_flashcards("https://firebasestorage.googleapis.com/v0/b/htn-rn-app.appspot.com/o/oJDN2chA8uM6BzbAzbrIR4wisD22%2FY2Mate.is%20-%20TORONTO%20VLOG%20A%20WEEKEND%20IN%20MY%20LIFE-C6yA9Eh8sLY-48k-1660023393366.mp3?alt=media&token=3eb105ec-aa36-45c4-a1b4-e996b1269803")
     for flashcard in flashcards:
         print(f"\n\n{flashcard.flashcard_to_json()}\n\n")
-    return get_graph(flashcards)
+    print(compute_graph(flashcards))
+    return "success"
 
 
 if __name__ == "__main__":

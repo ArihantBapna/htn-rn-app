@@ -17,8 +17,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 #      (make sure to ignore edges already in set)
 
 
-def construct_tree(flashcards: List[Flashcard]) -> Graph:
-    """Construct a tree of nodes from a list of Flashcards.
+def compute_graph(flashcards: List[Flashcard]) -> Graph:
+    """Construct a graph of nodes from a list of Flashcards.
     """
     graph = Graph() 
     for flashcard in flashcards:
