@@ -8,3 +8,4 @@ scikit-learn
 spacy
 numpy
 flask_cors
+annoy

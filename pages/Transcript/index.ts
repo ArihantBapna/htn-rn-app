@@ -1,3 +1,3 @@
-import {TranscriptPage} from "./Transcript";
+import { TranscriptPage } from "./Transcript";
 
 export default TranscriptPage;

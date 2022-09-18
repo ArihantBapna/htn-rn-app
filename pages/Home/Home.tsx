@@ -1,12 +1,14 @@
 import { signOut } from "@firebase/auth";
 import {
-    Button,
-    Box,
-    useToast,
-    Center,
-    ScrollView,
-    Heading,
-    HStack, Icon, IconButton,
+  Button,
+  Box,
+  useToast,
+  Center,
+  ScrollView,
+  Heading,
+  HStack,
+  Icon,
+  IconButton,
 } from "native-base";
 import { auth, db } from "../../firebase";
 import { Audio } from "expo-av";
@@ -17,12 +19,15 @@ import { doc, setDoc } from "firebase/firestore";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { Linking } from "react-native";
 import { useCollection } from "react-firebase-hooks/firestore";
-import {Ionicons} from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 export function HomePage() {
   const toast = useToast();
   const [recording, setRecording] = useState<Recording>();
   const [recordings, setRecordings] = useState<any[]>([]);
+
+  const navigation = useNavigation();
 
   async function startRecording() {
     try {
@@ -147,23 +152,33 @@ export function HomePage() {
               >
                 <Heading>{recording.name}</Heading>
                 <HStack space={2} alignItems={"center"} display={"flex"}>
-                    <IconButton
-                        icon={<Ionicons name="download" size={24} color="black" />}
-                        onPress={() => {
-                            Linking.openURL(recording.url)
-                                .then()
-                                .catch((err) => {
-                                    toast.show({
-                                        title: "Error opening file",
-                                        backgroundColor: "red.500",
-                                    });
-                                });
-                        }}
-                    >
-                    </IconButton>
-                    <IconButton icon={<Ionicons name={"clipboard-outline"} size={24} color={"black"}/>}>
-
-                    </IconButton>
+                  <IconButton
+                    icon={<Ionicons name="download" size={24} color="black" />}
+                    onPress={() => {
+                      Linking.openURL(recording.url)
+                        .then()
+                        .catch((err) => {
+                          toast.show({
+                            title: "Error opening file",
+                            backgroundColor: "red.500",
+                          });
+                        });
+                    }}
+                  />
+                  <IconButton
+                    onPress={() => {
+                      (navigation as any).navigate("transcript", {
+                        recording: recordings[index],
+                      });
+                    }}
+                    icon={
+                      <Ionicons
+                        name={"clipboard-outline"}
+                        size={24}
+                        color={"black"}
+                      />
+                    }
+                  />
                 </HStack>
               </HStack>
             );
