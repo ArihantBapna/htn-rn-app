@@ -7,7 +7,6 @@ import annoy
 from flashcard import Flashcard
 
 
-# filename = "Asking Harvard Students If They Ever Sleep.mp3"
 api_key = "2LMDM3GEVPLvDVoSQlm4bV5W4EbKn2ZW0jgl6zEM"
 co = cohere.Client(api_key)
 
@@ -35,12 +34,11 @@ def json_to_lst(text_content: str):
     return transcript
 
 
-def get_titles_from_chapters(chapter: Tuple[str]) -> str:
-    """Returns the titles of the chapters."""
-    # get the unique keywords for each flashcard from the chapter
-    # Query LLM here to give me the key idea based on the chapter gist, summary, and headline
-    # ironing out the kinks in prompt generation for now keep it simple and just return the gist
-    return chapter[0]
+def get_title_from_chapters(chapter: Tuple[str]) -> str:
+    """Returns the title of the chapters."""
+    # get the keywords for each flashcard from the chapter
+    title = chapter[0].split(".")[0]
+    return title
 
 
 # options for ANN "angular", "euclidean", "manhattan", "hamming", or "dot"
@@ -94,9 +92,8 @@ def get_flashcards(url):
     prof_embeddings = prof_data[1]  #
     entities = prof_data[2]
     chapters = prof_data[3]
-    print(f"\n\n{chapters}\n\n")
     # get the chapters, get the unique titles from each chapter
-    titles = [get_titles_from_chapters(c) for c in chapters]
+    titles = [get_title_from_chapters(c) for c in chapters]
     headlines = [c[1] for c in chapters]
     # get the similar sentences to each headline
     similar_sentences = get_similar_sentences(

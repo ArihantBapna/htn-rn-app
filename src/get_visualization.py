@@ -191,4 +191,5 @@ def rank_nodes(nodes: Set[Node]):
 # else, add the edge to set of edges and update each node. if node is satisfied,
 # put it in DONE and remove from AVAILABLE
 # when all nodes are in DONE we are done
-# if table exhausted continue running again with expanded table (2x edges per node)
+# if table exhausted continue running with expanded table (2x edges per node) 
+#      (make sure to ignore edges already in set)
