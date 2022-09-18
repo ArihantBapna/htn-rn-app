@@ -14,7 +14,7 @@ export function SlidesPage({ route, navigation }: any){
     const toast = useToast();
 
     useEffect(() => {
-        axios.post('https://src-usbebnquka-ue.a.run.app/get_visualization_url', {
+        axios.post('https://src-usbebnquka-ue.a.run.app/get_graph_url', {
             url: recording.url
         }).then((res) => {
             let json = JSON.parse(res.data[Object.keys(res.data)[0]]);
@@ -38,6 +38,7 @@ export function SlidesPage({ route, navigation }: any){
                     if (nativeEvent.state === State.ACTIVE) {
                         if (node["first"]){
                             setNode(tree[node["first"]]);
+                            setMainText(node["first"])
                         }
                     }
                 }}>
@@ -45,18 +46,22 @@ export function SlidesPage({ route, navigation }: any){
                         if (nativeEvent.state === State.ACTIVE) {
                             console.log("swiped right");
                             if (node["second"]){
+                                console.log("second exists");
                                 setNode(tree[node["second"]]);
+                                setMainText(node["second"])
                             }
                         }
                     }
                     }>
                         <TapGestureHandler onHandlerStateChange={({nativeEvent}) => {
                             if (nativeEvent.state === State.ACTIVE) {
-                                if (mainText === node["front"]){
+                                if (node && mainText === node["front"]){
                                     setMainText(node["back"]);
                                 }
                                 else {
-                                    setMainText(node["front"]);
+                                    if (node && node["front"]){
+                                        setMainText(node["front"]);
+                                    }
                                 }
                             }
                         }}>
