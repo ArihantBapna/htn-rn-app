@@ -53,8 +53,7 @@ def process_text():
 
 @app.route("/get_visualization")
 def get_visualization():
-    # flashcards = get_flashcards("https://firebasestorage.googleapis.com/v0/b/htn-rn-app.appspot.com/o/oJDN2chA8uM6BzbAzbrIR4wisD22%2F166.x-m4a?alt=media&token=55c79b8e-73d9-4b1e-8a71-89ad1a37ca1a")
-    flashcards = get_flashcards("https://firebasestorage.googleapis.com/v0/b/htn-rn-app.appspot.com/o/oJDN2chA8uM6BzbAzbrIR4wisD22%2FVery%20Nice%2010%20min%20audio.mp3?alt=media&token=6ad43591-762e-46f2-a52b-7b040479aff1")
+    flashcards = get_flashcards("https://firebasestorage.googleapis.com/v0/b/htn-rn-app.appspot.com/o/oJDN2chA8uM6BzbAzbrIR4wisD22%2FY2Mate.is%20-%20TORONTO%20VLOG%20A%20WEEKEND%20IN%20MY%20LIFE-C6yA9Eh8sLY-48k-1660023393366.mp3?alt=media&token=3eb105ec-aa36-45c4-a1b4-e996b1269803")
     for flashcard in flashcards:
         print(f"\n\n{flashcard.flashcard_to_json()}\n\n")
     return visualize_data(flashcards)
