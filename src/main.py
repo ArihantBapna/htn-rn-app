@@ -1,6 +1,6 @@
 import os
 cohere_api = '2LMDM3GEVPLvDVoSQlm4bV5W4EbKn2ZW0jgl6zEM'
-assembly_api = 'c4187da13e3d4c6fa7ead1cac4246a1f'
+assembly_api = '73aaa83cf0fa430b9d86d87e51b7e99e'
 from flask import Flask
 from flask import request
 from flask_cors import CORS
