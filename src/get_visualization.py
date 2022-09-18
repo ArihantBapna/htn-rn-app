@@ -10,13 +10,14 @@ def visualize_data(flashcards):
     # average flashcards
     flashcard_vectors = {}
     for flashcard in flashcards:
-        embeddings_to_avg = [np.array(flashcard.headline)]
+        embeddings_to_avg = [np.array(flashcard.get_headline_embedding())]
         embeddings = flashcard.get_embedding()
         for embedding in embeddings:
             embeddings_to_avg.append(np.array(embedding))
         avg = np.mean(embeddings_to_avg, axis=0)
         flashcard_vectors[flashcard] = avg
         flashcard.set_average_embedding(avg)
+    print(flashcard_vectors)
 
     # add .first and .second values to flashcards
     assign_first_second(flashcard_vectors)
@@ -36,17 +37,28 @@ def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]) -> None:
 
     Equation: Cos(x, y) = x . y / ||x|| * ||y||
     """
-    for flashcard, flashcard_vector in flashcard_vectors:
-        corresponding_similarities = {}
-        for other_front, other_vector in flashcard_vectors:
-            if flashcard != other_front:  # don't compare the same node to itself
-                cos_val = np.dot(flashcard_vector, other_vector) / (flashcard_vector.size * other_vector.size)
-                corresponding_similarities[other_front] = cos_val
+    if len(flashcard_vectors) <= 1:
+        return
+    elif len(flashcard_vectors) == 2:
+        temp = list(flashcard_vectors)
+        temp[0].first = temp[1].front
+        temp[1].first = temp[0].front
+    else:
+        for flashcard in flashcard_vectors:
+            flashcard_vector = flashcard_vectors[flashcard]
+            corresponding_similarities = {}
 
-        # get top two
-        first, second = get_top_two_vectors(corresponding_similarities)
-        flashcard.first = first
-        flashcard.second = second
+            for other_front in flashcard_vectors:
+                print(f"other front: {other_front.front}")
+                other_vector = flashcard_vectors[other_front]
+                if flashcard != other_front:  # don't compare the same node to itself
+                    cos_val = np.dot(flashcard_vector, other_vector) / (flashcard_vector.size * other_vector.size)
+                    corresponding_similarities[other_front] = cos_val
+
+            # get top two
+            first, second = get_top_two_vectors(corresponding_similarities)
+            flashcard.first = first
+            flashcard.second = second
 
     return
 
@@ -54,11 +66,16 @@ def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]) -> None:
 def get_top_two_vectors(corresponding_similarities: Dict[Flashcard, np.array]):
     first = ['', 0]
     second = ['', 0]
-    for front, cos_val in corresponding_similarities:
+    for front in corresponding_similarities:
+        cos_val = corresponding_similarities[front]
+        print(cos_val)
         if cos_val >= first[1]:
             first = [front, cos_val]
         elif cos_val >= second[1]:
             second = [front, cos_val]
+        print(f"{first} {second}")
+    assert first != ['', 0]
+    assert second != ['', 0]
     return first, second
 
 
@@ -70,7 +87,7 @@ def initialize_nodes(flashcards: Set[Flashcard], flashcard_dict: Dict[str, Flash
         corresponding_node = Node(flashcard, {flashcard.first, flashcard.second}, set())
         temp_nodes[flashcard] = corresponding_node
 
-    for flashcard, node in temp_nodes:
+    for flashcard in temp_nodes:
         first = flashcard_dict[flashcard.first]  # type(first) == Flashcard
         first_node = temp_nodes[first]  # type(first_node) = Node
         temp_nodes[first].point_in.add(first_node)  # Node points to Node
@@ -104,7 +121,7 @@ def rank_fan_nodes(lonely_node: Node, edges: Set[tuple]):
     Flashcard.
     """
     lst = []
-    for fan_node, popular_node in edges:
+    for (fan_node, popular_node) in edges:
         fan_avg_embedding = fan_node.flashcard.get_average_embedding()
         lonely_avg_embedding = lonely_node.flashcard.get_average_embedding()
         cos_val = np.dot(fan_avg_embedding, lonely_avg_embedding) / (fan_avg_embedding.size * lonely_avg_embedding.size)
