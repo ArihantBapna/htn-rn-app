@@ -33,7 +33,8 @@ def visualize_data(flashcards: List[Flashcard]):
         print(f"{node.flashcard.flashcard_to_json()} {node.point_in} {node.point_out}")
 
     # rank nodes by # of input nodes
-    return rank_nodes(nodes)
+    # return rank_nodes(nodes)
+    return nodes
 
 
 def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]) -> None:
@@ -84,24 +85,24 @@ def get_top_two_vectors(corresponding_similarities: Dict[Flashcard, np.array]):
     return first[0], second[0]
 
 
-def initialize_nodes(flashcards: List[Flashcard], flashcard_dict: Dict[str, Flashcard]):
+def initialize_nodes(flashcards: List[Flashcard], flashcard_dict: Dict[str, Flashcard], ):
     """Iterate over flashcards to create nodes: Set[Nodes].
     """
     temp_nodes = {}
     for flashcard in flashcards:
         assert isinstance(flashcard, Flashcard)
-        corresponding_node = Node(flashcard, {flashcard_dict[flashcard.first], flashcard_dict[flashcard.second]}, set())
-        temp_nodes[flashcard] = corresponding_node
+        corresponding_node = Node(flashcard, set(), set())
+        temp_nodes[flashcard] = corresponding_node  # Flashcard : Node
 
     for flashcard in temp_nodes:
         if flashcard.first is not None:
             first = flashcard_dict[flashcard.first]  # type(first) == Flashcard
-            first_node = temp_nodes[first]  # type(first_node) = Node
-            temp_nodes[first].point_in.add(first_node)  # first touched by flashcard
+            temp_nodes[first].point_in.add(flashcard)  # first Node touched by flashcard
+            temp_nodes[flashcard].point_out.add(temp_nodes[flashcard_dict[flashcard.first]])  # add to point_out
         if flashcard.second is not None:
             second = flashcard_dict[flashcard.second]
-            second_node = temp_nodes[second]
-            temp_nodes[second].point_in.add(second_node)  # second touched by flashcard
+            temp_nodes[second].point_in.add(flashcard)  # second Node touched by flashcard
+            temp_nodes[flashcard].point_out.add(temp_nodes[flashcard_dict[flashcard.second]])  # add to point_out
 
     nodes = {temp_nodes[flashcard] for flashcard in temp_nodes}
     return nodes
