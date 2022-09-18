@@ -179,6 +179,20 @@ export function HomePage() {
                       />
                     }
                   />
+                    <IconButton
+                        onPress={() => {
+                            (navigation as any).navigate("slides", {
+                                recording: recordings[index],
+                            });
+                        }}
+                        icon={
+                            <Ionicons
+                                name={"albums-outline"}
+                                size={24}
+                                color={"black"}
+                            />
+                        }
+                    />
                 </HStack>
               </HStack>
             );
