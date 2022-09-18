@@ -66,18 +66,26 @@ def get_similar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
         ).embeddings
         similar_sentences[headline] = (headline_embedding[0], [], [])
 
-    for i in range(n):
-        for headline in headlines:
-            top = search_index.get_nns_by_vector(similar_sentences[headline][0], 1)[0]
-            if prof_transcript[top] in seen:
-                j = 1
-                while prof_transcript[top] in seen and j < len(similar_sentences[headline][0]):
-                    top = search_index.get_nns_by_vector(
-                        similar_sentences[headline][0], j + 1)[j]
-                    j += 1
-            seen.add(prof_transcript[top])
-            similar_sentences[headline][1].append(prof_transcript[top])
-            similar_sentences[headline][2].append(prof_embeddings[top])
+    # for i in range(n):
+    #     for headline in headlines:
+    #         top = search_index.get_nns_by_vector(similar_sentences[headline][0], 1)[0]
+    #         if prof_transcript[top] in seen:
+    #             j = 1
+    #             while prof_transcript[top] in seen and j < len(similar_sentences[headline][0]):
+    #                 top = search_index.get_nns_by_vector(
+    #                     similar_sentences[headline][0], j + 1)[j]
+    #                 j += 1
+    #         seen.add(prof_transcript[top])
+    #         similar_sentences[headline][1].append(prof_transcript[top])
+    #         similar_sentences[headline][2].append(prof_embeddings[top])
+    for headline in headlines:
+        top = search_index.get_nns_by_vector(similar_sentences[headline][0], n)
+        for i in top:
+            if prof_transcript[i] in seen:
+                continue
+            seen.add(prof_transcript[i])
+            similar_sentences[headline][1].append(prof_transcript[i])
+            similar_sentences[headline][2].append(prof_embeddings[i])
 
     return similar_sentences
 
