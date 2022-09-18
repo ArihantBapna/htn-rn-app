@@ -41,6 +41,7 @@ def construct_tree(flashcards: List[Flashcard]) -> Graph:
         if df.size > 0:
             df.sort_values(by=2, axis=0)
         sim_scores = df.values.tolist()
+
         for edge in sim_scores:
             if edge[0] in done or edge[1] in done:
                 continue
