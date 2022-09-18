@@ -63,10 +63,11 @@ class Node:
         self.point_in = point_in
         self.point_out = point_out
     
-    # def node_to_json(self):
-    #     flashcard_stripped = self.flashcard.flashcard_to_json()
-    #     return json.dumps(self.__dict__, cls=NodeEncoder)
-
+    def print_node(self):
+        ## Print the node's flashcard json and the lists of points in and out
+        print(self.flashcard.flashcard_to_json())
+        print(f"Points in:{self.point_in})")
+        print(f"Points out:{self.point_out})")
 
 class NodeEncoder(JSONEncoder):
     def default(self, o):
