@@ -1,5 +1,7 @@
 from typing import Union
 import numpy as np
+import json
+from json import JSONEncoder
 
 
 class Flashcard:
@@ -13,7 +15,8 @@ class Flashcard:
     _embedding: list
     _average_embedding: Union[None, np.array]
 
-    def __init__(self, front, back, gist, first, second, headline_str, headline_embedding, embedding, average_embedding):
+    def __init__(self, front, back, gist, first, second, headline_str, headline_embedding, embedding,
+                 average_embedding):
         self.front = front
         self.back = back
         self.gist = gist
@@ -23,10 +26,10 @@ class Flashcard:
         self.first = first
         self.second = second
         self._average_embedding = average_embedding
-    
+
     def get_headline_embedding(self):
         return self._headline_embedding
-    
+
     def get_embedding(self):
         return self._embedding
 
@@ -35,6 +38,11 @@ class Flashcard:
 
     def set_average_embedding(self, average_embedding):
         self._average_embedding = average_embedding
+
+
+class FlashcardEncoder(JSONEncoder):
+    def default(self, o):
+        return o.__dict__
 
 
 class Node:
@@ -46,3 +54,8 @@ class Node:
         self.flashcard = flashcard
         self.point_in = point_in
         self.point_out = point_out
+
+
+class NodeEncoder(JSONEncoder):
+    def default(self, o):
+        return o.__dict__
