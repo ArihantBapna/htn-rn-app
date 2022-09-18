@@ -12,23 +12,26 @@ co = cohere.Client(cohere_api)
 
 
 def get_prof_data(url):
-    """Returns the structured data of the prof's transcript."""
+    """Returns the structured data of the prof's transcript.
+       transcript: list[str]
+       embeddings: list[list[float]]
+       entities: list[str]
+       chapters: list[tuple(str, str)]"""
     speaker_to_str = json.loads(get_transcript_from_url(url))
     try:
-        transcript = json_to_lst(speaker_to_str["A"])
+        transcript = json_to_transcript(speaker_to_str["A"])
     except KeyError:
-        transcript = json_to_lst(speaker_to_str["UNK"])
+        transcript = json_to_transcript(speaker_to_str["UNK"])
     entities = speaker_to_str["entities"]
     embedding = co.embed(texts=transcript, model="large", truncate="RIGHT").embeddings
     chapters = speaker_to_str["chapters"]  # (gist, headline, summary)
     return transcript, embedding, entities, chapters
 
 
-def json_to_lst(text_content: str):
+def json_to_transcript(text_content: str):
     """Converts a json transcript to a list of strings."""
-    # assumption: this is the prof's transcript
     text_content = re.sub(r"\(.*\)", "", str(text_content))
-    nlp = English()  # just the language with no pipeline
+    nlp = English()
     nlp.add_pipe("sentencizer")
     doc = nlp(text_content)
     transcript = []
@@ -43,16 +46,18 @@ def get_title_from_chapters(chapter: Tuple[str]) -> str:
     return title
 
 
-# options for ANN "angular", "euclidean", "manhattan", "hamming", or "dot"
+
 def get_similar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
-    """Returns the top n similar sentences to each headline."""
+    """Returns the top n similar sentences to each headline.
+        clustering algorithms for ANN are "angular",
+        "euclidean","manhattan", "hamming", or "dot""""
     assert len(prof_embeddings) == len(prof_transcript)
     phrases_to_vectors = {}
     for sentence in prof_transcript:
         phrases_to_vectors[sentence] = prof_embeddings[0]  # map our phrases to embeddings
 
-    seen = set()  # seen phrases, prevent duplicate similar sentences
-    similar_sentences = {}  # key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
+    seen = set()
+    similar_sentences = {}
 
     search_index = annoy.AnnoyIndex(
         len(prof_embeddings[0]), "angular"
@@ -108,9 +113,11 @@ def summarize(text):
     
 
 def get_flashcards(url):
-    """Returns a set of flashcards for the given url."""
-    # get the transcript and relevant data
-    prof_data = get_prof_data(url)  # (transcript, embeddings, entities, chapters)
+    """Returns a set of flashcards for the given url.
+       *similar_sentences: keys: headlines,
+        values <-- (headline embedding, top 3 phrases, embeddings)
+    *prof_data: transcript, embeddings, entities, chapters"""
+    prof_data = get_prof_data(url)
     prof_transcript = prof_data[0]  # list[str]
     prof_embeddings = prof_data[1]
     entities = prof_data[2]
@@ -120,13 +127,11 @@ def get_flashcards(url):
     similar_sentences = get_similar_sentences(
         prof_transcript, prof_embeddings, headlines
     )
-    # ^^^ key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
     flashcards = []
     for t, h, c in zip(titles, headlines, chapters):
         sents = " ".join(similar_sentences[h][1])
         back = f"{h} {sents}"
         embedding = co.embed(texts=[back], model="large", truncate="RIGHT").embeddings[0]
-        # if back is too long, summarize it with cohere
         if len(back) > 150:
             back = summarize(back)
         flashcards.append(

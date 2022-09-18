@@ -83,8 +83,10 @@ class Graph:
         self.edges = edges
 
     def graph_to_json(self):
-        # for every edge, if there is a node not seen before, add it to the list of nodes
-        # then, when all edges done, convert all nodes to json
+        """Converts graph to list of jsons.
+        For every edge, if there is a node not seen before,
+        add it to the list of nodes then, when all edges done, 
+        convert all nodes to json"""
         new_nodes = set()
         for e in self.edges:
             if e[0] not in new_nodes:
@@ -103,7 +105,6 @@ class Graph:
     def add_edge(self, edge):
         edge[0].point_out.add(edge[1])
         edge[1].point_in.add(edge[0])
-        # update first and/or second of node
         if edge[0].flashcard.first is None:
             edge[0].flashcard.first = edge[1].flashcard.front
         elif edge[0].flashcard.second is None:
