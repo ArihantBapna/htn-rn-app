@@ -3,6 +3,7 @@ from flashcard import Flashcard, Node
 import numpy as np
 import pandas as pd
 from collections import defaultdict
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 def visualize_data(flashcards: List[Flashcard]):
@@ -50,7 +51,7 @@ def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]) -> None:
             for other_front in flashcard_vectors:
                 other_vector = flashcard_vectors[other_front]
                 if flashcard != other_front:  # don't compare the same node to itself
-                    cos_val = np.dot(flashcard_vector, other_vector) / (flashcard_vector.size * other_vector.size)
+                    cos_val = cosine_similarity(flashcard_vector, other_vector)
                     corresponding_similarities[other_front] = cos_val
 
             # get top two
@@ -62,10 +63,12 @@ def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]) -> None:
 
 
 def get_top_two_vectors(corresponding_similarities: Dict[Flashcard, np.array]):
-    first = ['', 0]
+    first = ['', ]
     second = ['', 0]
+    print(f"corresponding_similarities: {len(corresponding_similarities)}")
     for front in corresponding_similarities:
         cos_val = corresponding_similarities[front]
+        print(f"{front}: {cos_val}")
         if cos_val >= first[1]:
             first = [front, cos_val]
         elif cos_val >= second[1]:
@@ -121,7 +124,7 @@ def rank_fan_nodes(lonely_node: Node, edges: Set[tuple]):
     for (fan_node, popular_node) in edges:
         fan_avg_embedding = fan_node.flashcard.get_average_embedding()
         lonely_avg_embedding = lonely_node.flashcard.get_average_embedding()
-        cos_val = np.dot(fan_avg_embedding, lonely_avg_embedding) / (fan_avg_embedding.size * lonely_avg_embedding.size)
+        cos_val = cosine_similarity(fan_avg_embedding, lonely_avg_embedding)
         lst.append([fan_node, popular_node, cos_val])
 
     df = pd.DataFrame(lst)

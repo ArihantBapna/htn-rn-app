@@ -38,7 +38,7 @@ class Flashcard:
         self._average_embedding = average_embedding
 
     def flashcard_to_json(self):
-        ## Convert every flashcard to a json object, but don't include the embeddings
+        # Convert every flashcard to a json object, but don't include the embeddings
         stripped = self.__dict__.copy() # copy the dict so we don't modify the original
         del stripped["_headline_embedding"]
         del stripped["_embedding"]
@@ -62,10 +62,11 @@ class Node:
         self.point_out = point_out
     
     def print_node(self):
-        ## Print the node's flashcard json and the lists of points in and out
+        # Print the node's flashcard json and the lists of points in and out
         print(self.flashcard.flashcard_to_json())
         print(f"Points in:{self.point_in})")
         print(f"Points out:{self.point_out})")
+
 
 class NodeEncoder(JSONEncoder):
     def default(self, o):
