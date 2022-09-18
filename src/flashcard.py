@@ -1,3 +1,4 @@
+from curses import flash
 from typing import Union, List, Tuple
 import numpy as np
 import json
@@ -82,9 +83,16 @@ class Graph:
         self.edges = edges
 
     def graph_to_json(self):
-        # Convert every node to a json object, but don't include the embeddings
-        flashcards = [n.flashcard.flashcard_to_json() for n in self.nodes]
-        return str(json.dumps(flashcards))
+        # for every edge, if there is a node not seen before, add it to the list of nodes
+        # then, when all edges done, convert all nodes to json
+        new_nodes = set()
+        for e in self.edges:
+            if e[0] not in new_nodes:
+                new_nodes.add(e[0])
+            if e[1] not in new_nodes:
+                new_nodes.add(e[1])
+        flashcards = [n.flashcard.flashcard_to_json() for n in new_nodes]
+        return str(flashcards)
 
     def add_node(self, node):
         self.nodes.append(node)
