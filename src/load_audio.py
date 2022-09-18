@@ -1,9 +1,7 @@
 import requests
-import os
-from dotenv import load_dotenv
+from main import assembly_api
 
-load_dotenv()
-assembly_api = os.getenv('assembly')
+filename = "Asking Harvard Students If They Ever Sleep.mp3"
 
 
 def get_response_from_url(url):

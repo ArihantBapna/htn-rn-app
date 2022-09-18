@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Set
 from get_transcript import get_transcript_from_url
 from spacy.lang.en import English
 import re
@@ -6,11 +6,8 @@ import json
 import cohere
 import annoy
 from flashcard import Flashcard
-from dotenv import load_dotenv
-import os
+from main import cohere_api
 
-load_dotenv()
-cohere_api = os.getenv('cohere')
 co = cohere.Client(cohere_api)
 
 
