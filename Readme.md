@@ -1,9 +1,5 @@
-# NativeBase TypeScript Expo Template
+# Squirrel 
 
-The official NativeBase TypeScript template for [Expo](https://docs.expo.io/)
+The official repository for [Squirrel](https://devpost.com/software/squirrelai)
 
 ## Usage
-
-```sh
-expo init my-app --template @native-base/expo-template-typescript
-```
