@@ -172,3 +172,14 @@ def rank_nodes(nodes: Set[Node]):
         if i in d:
             lst.extend(d[i])
     return lst
+
+
+# compute the top 5 edges for every node into a table with sim score rel to other nodes
+# sort according to sim score
+# going down in the table, attempt to add a given edge
+# if adding the edge would result in
+#      outgoing edges <= 2 and incoming edges <= 2 for either node, go to next in table
+# else, add the edge to set of edges and update each node. if node is satisfied,
+# put it in DONE and remove from AVAILABLE
+# when all nodes are in DONE we are done
+# if table exhausted continue running again with expanded table (2x edges per node)
