@@ -93,7 +93,7 @@ class Graph:
                 new_nodes.add(e[0])
             if e[1] not in new_nodes:
                 new_nodes.add(e[1])
-        for n in new_nodes:
+        for n in new_nodes: # this is funky
             if n.flashcard.first is None and n.flashcard.second is None:
                 n.flashcard.first = new_nodes.elements().next().flashcard.front
                 
