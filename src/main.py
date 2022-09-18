@@ -8,6 +8,11 @@ from process_text import get_flashcards
 from get_visualization import visualize_data
 from compute_graph import compute_graph
 import json
+from dotenv import load_dotenv
+
+load_dotenv()
+cohere_api = os.getenv('cohere')
+assembly_api = os.getenv('assembly')
 
 app = Flask(__name__)
 CORS(app)
