@@ -16,6 +16,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # if table exhausted continue running with expanded table (2x edges per node) 
 #      (make sure to ignore edges already in set)
 
+
 def construct_tree(flashcards: List[Flashcard]) -> Graph:
     """Construct a tree of nodes from a list of Flashcards.
     """
@@ -57,6 +58,7 @@ def construct_tree(flashcards: List[Flashcard]) -> Graph:
         sim_max *= 2
         
     return str(graph.graph_to_json())
+
 
 def compute_sim_scores(graph, depth_limit):
     sim_scores = set()
