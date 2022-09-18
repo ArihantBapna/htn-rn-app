@@ -4,7 +4,6 @@ from flashcard import Flashcard, Node
 import numpy as np
 import pandas as pd
 from collections import defaultdict
-from sklearn.metrics.pairwise import cosine_similarity
 
 
 def visualize_data(flashcards: List[Flashcard]):
