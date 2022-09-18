@@ -25,10 +25,6 @@ def construct_tree(flashcards: List[Flashcard]) -> Graph:
     
     sim_max = 5
     # sort according to sim score
-    df = pd.DataFrame(sim_scores)
-    if df.size > 0:
-        df.sort_values(by=2, axis=0)
-    sim_scores = df.values.tolist()
     # going down in the table, attempt to add a given edge
     # if adding the edge would result in
     #      outgoing edges <= 2 and incoming edges <= 2 for either node, go to next in table
@@ -41,6 +37,10 @@ def construct_tree(flashcards: List[Flashcard]) -> Graph:
     available = set(graph.nodes)
     while len(available) > 0:
         simscores = compute_sim_scores(graph, sim_max)
+        df = pd.DataFrame(sim_scores)
+        if df.size > 0:
+            df.sort_values(by=2, axis=0)
+        sim_scores = df.values.tolist()
         for edge in sim_scores:
             if edge[0] in done or edge[1] in done:
                 continue
