@@ -105,8 +105,8 @@ def get_flashcards(url):
     flashcards = set()
     for t in titles:
         for headline in headlines:
-            sents = headline + " ".join(similar_sentences[headline][1])
-            back = f"{headline}\n{sents}"
+            sents = " ".join(similar_sentences[headline][1])
+            back = f"{headline} {sents}"
             embedding = co.embed(texts=[back], model="large", truncate="RIGHT").embeddings
             flashcards.add(
                 Flashcard(
