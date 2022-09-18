@@ -32,7 +32,7 @@ def json_to_lst(text_content: str):
     doc = nlp(text_content)
     transcript = []
     for sentence in doc.sents:
-        transcript.append(sentence.text)
+        transcript.append(sentence.text.strip())
     return transcript
 
 
