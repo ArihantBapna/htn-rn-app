@@ -40,7 +40,6 @@ def json_to_lst(text_content: str):
 
 def get_title_from_chapters(chapter: Tuple[str]) -> str:
     """Returns the title of the chapters."""
-    # get the keywords for each flashcard from the chapter
     title = chapter[0].split(".")[0]
     return title
 
@@ -81,6 +80,34 @@ def get_similar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
     return similar_sentences
 
 
+def summarize(text):
+    """Returns a summary of the text."""
+    prompt = f'''
+        "The killer whale or orca (Orcinus orca) is a toothed whale
+        belonging to the oceanic dolphin family, of which it is the largest member"
+        In summary: "The killer whale or orca is the largest type of dolphin"
+
+        "Cognitive Science is the interdisciplinary, scientific study of the mind and its processes.
+        It examines the nature, the tasks, and the functions of cognition."
+        In summary: "Cognitive Science: the study of the mind and its processes"
+
+        "{text}"
+        In summary:"'''
+
+    prediction = co.generate(
+        model='large',
+        prompt=prompt,
+        return_likelihoods = 'GENERATION',
+        stop_sequences=['"'],
+        max_tokens=55,
+        temperature=0.75,
+        num_generations=1,
+        k=0,
+        p=0.85
+    ).generations[0].text
+    return prediction
+    
+
 def get_flashcards(url):
     """Returns a set of flashcards for the given url."""
     # get the transcript and relevant data
@@ -89,10 +116,8 @@ def get_flashcards(url):
     prof_embeddings = prof_data[1]
     entities = prof_data[2]
     chapters = prof_data[3]
-    # get the chapters, get the unique titles from each chapter
     titles = [get_title_from_chapters(c) for c in chapters]
     headlines = [c[1] for c in chapters]
-    # get the similar sentences to each headline
     similar_sentences = get_similar_sentences(
         prof_transcript, prof_embeddings, headlines
     )
@@ -101,7 +126,10 @@ def get_flashcards(url):
     for t, h, c in zip(titles, headlines, chapters):
         sents = " ".join(similar_sentences[h][1])
         back = f"{h} {sents}"
-        embedding = co.embed(texts=[back], model="large", truncate="RIGHT").embeddings
+        embedding = co.embed(texts=[back], model="large", truncate="RIGHT").embeddings[0]
+        # if back is too long, summarize it with cohere
+        if len(back) > 150:
+            back = summarize(back)
         flashcards.append(
             Flashcard(
                 t,
@@ -110,17 +138,9 @@ def get_flashcards(url):
                 None,
                 h,
                 similar_sentences[h][0],
-                embedding[0],
+                embedding,
                 None
             )
         )
-    # init flashcard: need front: str
-    # back: str
-    # gist: str
-    # first: Union[None, str]
-    # second: Union[None, str]
-    # headline: str
-    # _headline_embedding: list
-    # _embedding: list
 
     return flashcards

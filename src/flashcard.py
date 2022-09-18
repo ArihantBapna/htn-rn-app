@@ -91,8 +91,11 @@ class Graph:
                 new_nodes.add(e[0])
             if e[1] not in new_nodes:
                 new_nodes.add(e[1])
-        flashcards = [n.flashcard.flashcard_to_json() for n in new_nodes]
-        return str(flashcards)
+        for n in new_nodes:
+            if n.flashcard.first is None and n.flashcard.second is None:
+                n.flashcard.first = new_nodes.elements().next().flashcard.front
+                
+        return {n.flashcard.front: n.flashcard.flashcard_to_json() for n in new_nodes}
 
     def add_node(self, node):
         self.nodes.append(node)

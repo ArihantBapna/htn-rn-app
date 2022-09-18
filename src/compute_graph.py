@@ -32,33 +32,40 @@ def compute_graph(flashcards: List[Flashcard]) -> Graph:
     #      (make sure to ignore edges already in set)
     done = set()
     available = set(graph.nodes)
+    if len(available) == 1:
+        node = available.pop()
+        graph.add_edge((node, node))
+        return graph.graph_to_json()
+
     while len(available) > 0:
-        if len(available) == 1:
-            done.add(available.pop())
-            break
         sim_scores = compute_sim_scores(graph, sim_max)
         sim_scores.sort(key=lambda x: x[2], reverse=True)
         for edge in sim_scores:
-            if edge[0] in done or edge[1] in done:
-                continue
             # if adding the edge would result in
             #      outgoing edges > 2 or incoming edges > 2 for either node, go to next in table
-            if len(edge[0].point_out) == 2 or len(edge[1].point_in) == 2:
+            if edge[0] in done or edge[1] in done:
                 continue
-            else:
-                graph.add_edge(edge)
+            if len(edge[0].point_out) == 2 and len(edge[0].point_in) == 2:
                 done.add(edge[0])
-                done.add(edge[1])
                 available.remove(edge[0])
+            elif len(edge[1].point_out) == 2 and len(edge[1].point_in) == 2:
+                done.add(edge[1])
                 available.remove(edge[1])
-        sim_max *= 2
+            elif len(edge[0].point_out) < 2 and len(edge[1].point_in) < 2:
+                graph.add_edge(edge)
+                edge[0].point_out.add(edge[1])
+                edge[1].point_in.add(edge[0])
+
+        if sim_max < len(graph.nodes) * 2:
+            sim_max *= 2
+        else:
+            break
 
     return graph.graph_to_json()
 
 
 def compute_sim_scores(graph, depth_limit):
     sim_scores = set()
-    # computer the top 5 edges for every node into a table with sim score rel to other nodes
     for node in graph.nodes:
         depth = 0
         for other_node in graph.nodes:
