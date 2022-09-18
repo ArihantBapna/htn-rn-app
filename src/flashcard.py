@@ -75,7 +75,7 @@ class NodeEncoder(JSONEncoder):
 
 class Graph:
     nodes: List[Node]
-    edges: List[Node] # list of tuples of nodes actually
+    edges: List[Node]  # list of tuples of nodes actually
 
     def __init__(self, nodes = [], edges = []):
         self.nodes = nodes

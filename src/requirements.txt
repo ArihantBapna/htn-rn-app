@@ -9,3 +9,4 @@ spacy
 numpy
 flask_cors
 annoy
+scipy

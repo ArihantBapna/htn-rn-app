@@ -1,12 +1,9 @@
 from typing import Dict, Set, List
-
 import scipy
-
 from flashcard import Flashcard, Node
 import numpy as np
 import pandas as pd
 from collections import defaultdict
-from sklearn.metrics.pairwise import cosine_similarity
 
 
 def visualize_data(flashcards: List[Flashcard]):
@@ -100,11 +97,11 @@ def initialize_nodes(flashcards: List[Flashcard], flashcard_dict: Dict[str, Flas
         if flashcard.first is not None:
             first = flashcard_dict[flashcard.first]  # type(first) == Flashcard
             first_node = temp_nodes[first]  # type(first_node) = Node
-            temp_nodes[first].point_in.add(first_node)  # Node points to Node
-        if flashcard.first is not None:
+            temp_nodes[first].point_in.add(first_node)  # first touched by flashcard
+        if flashcard.second is not None:
             second = flashcard_dict[flashcard.second]
             second_node = temp_nodes[second]
-            temp_nodes[second].point_in.add(second_node)
+            temp_nodes[second].point_in.add(second_node)  # second touched by flashcard
 
     nodes = {temp_nodes[flashcard] for flashcard in temp_nodes}
     return nodes
