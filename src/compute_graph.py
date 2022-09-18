@@ -58,8 +58,7 @@ def compute_graph(flashcards: List[Flashcard]) -> Graph:
                 available.remove(edge[0])
                 available.remove(edge[1])
         sim_max *= 2
-    for edge in done:
-        graph.add_edge(edge)
+
     return str(graph.graph_to_json())
 
 

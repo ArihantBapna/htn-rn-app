@@ -88,7 +88,9 @@ class Graph:
         self.nodes.append(node)
     
     def add_edge(self, edge):
-        self.edges.append(edge)
+            edge[0].points_out.add(edge[1])
+            edge[1].points_in.add(edge[0])
+            self.edges.append(edge)
 
 
 class GraphEncoder(JSONEncoder):
