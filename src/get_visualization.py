@@ -31,6 +31,10 @@ def visualize_data(flashcards: List[Flashcard]):
     adjust_graph(lonely, edges)
 
     assert len(nodes) > 0
+
+    for node in nodes:
+        print(f"{node.flashcard.flashcard_to_json()} {node.point_in} {node.point_out}")
+
     # rank nodes by # of input nodes
     return rank_nodes(nodes)
 
@@ -89,7 +93,7 @@ def initialize_nodes(flashcards: List[Flashcard], flashcard_dict: Dict[str, Flas
     temp_nodes = {}
     for flashcard in flashcards:
         assert isinstance(flashcard, Flashcard)
-        corresponding_node = Node(flashcard, {flashcard.first, flashcard.second}, set())
+        corresponding_node = Node(flashcard, {flashcard_dict[flashcard.first], flashcard_dict[flashcard.second]}, set())
         temp_nodes[flashcard] = corresponding_node
 
     for flashcard in temp_nodes:
