@@ -15,7 +15,10 @@ co = cohere.Client(api_key)
 def get_prof_data(url):
     """Returns the structured data of the prof's transcript."""
     speaker_to_str = json.loads(get_transcript_from_url(url))
-    transcript = json_to_lst(speaker_to_str["A"])
+    try:
+        transcript = json_to_lst(speaker_to_str["A"])
+    except KeyError:
+        transcript = json_to_lst(speaker_to_str["UNK"])
     entities = speaker_to_str["entities"]
     embedding = co.embed(texts=transcript, model="large", truncate="RIGHT").embeddings
     chapters = speaker_to_str["chapters"]  # (gist, headline, summary)
