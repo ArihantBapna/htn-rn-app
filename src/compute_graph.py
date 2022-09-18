@@ -1,11 +1,8 @@
 # compute_graph.py
 from typing import Dict, Set, List
 from flashcard import Flashcard, Node, Graph
-import numpy as np
-import pandas as pd
 import scipy
-from collections import defaultdict
-from sklearn.metrics.pairwise import cosine_similarity
+
 # compute the top 5 edges for every node into a table with sim score rel to other nodes
 # sort according to sim score
 # going down in the table, attempt to add a given edge

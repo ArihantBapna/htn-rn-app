@@ -1,8 +1,6 @@
 from load_audio import get_response_from_url
 import json
 
-filename = "Asking Harvard Students If They Ever Sleep.mp3"
-
 
 def get_transcript_from_url(url):
     response_json = get_response_from_url(url)

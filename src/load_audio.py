@@ -3,15 +3,6 @@ import requests
 filename = "Asking Harvard Students If They Ever Sleep.mp3"
 
 
-def read_file(filename, chunk_size=5242880):
-    with open(filename, 'rb') as _file:
-        while True:
-            data = _file.read(chunk_size)
-            if not data:
-                break
-            yield data
-
-
 def get_response_from_url(url):
     headers = {'authorization': "c4187da13e3d4c6fa7ead1cac4246a1f", 'content-type': "application/json"}
     endpoint = "https://api.assemblyai.com/v2/transcript"
