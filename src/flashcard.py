@@ -47,6 +47,7 @@ class Flashcard:
         del stripped["_average_embedding"]
         return json.dumps(stripped, cls=FlashcardEncoder)
 
+
 class FlashcardEncoder(JSONEncoder):
     def default(self, o):
         return o.__dict__
