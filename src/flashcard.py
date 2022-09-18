@@ -82,7 +82,10 @@ class Graph:
         self.edges = edges
 
     def graph_to_json(self):
-        return json.dumps(self.__dict__, cls=GraphEncoder)
+        # Convert every node to a json object, but don't include the embeddings
+        nodes = [node.flashcard.flashcard_to_json() for node in self.nodes]
+        return str(json.dumps(nodes, cls=NodeEncoder))
+        
     
     def add_node(self, node):
         self.nodes.append(node)
@@ -90,10 +93,10 @@ class Graph:
     def add_edge(self, edge):
             edge[0].point_out.add(edge[1])
             edge[1].point_in.add(edge[0])
+            # update first and/or second of node
+            if edge[0].flashcard.first is None:
+                edge[0].flashcard.first = edge[1].flashcard.front
+            elif edge[0].flashcard.second is None:
+                edge[0].flashcard.second = edge[1].flashcard.front
+ 
             self.edges.append(edge)
-
-
-class GraphEncoder(JSONEncoder):
-    def default(self, o):
-        return o.__dict__
-        

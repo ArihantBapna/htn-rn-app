@@ -39,11 +39,7 @@ def compute_graph(flashcards: List[Flashcard]) -> Graph:
     available = set(graph.nodes)
     while len(available) > 0:
         sim_scores = compute_sim_scores(graph, sim_max)
-        df = pd.DataFrame(sim_scores)
-        if df.size > 0:
-            df.sort_values(by=2, axis=0)
-        sim_scores = df.values.tolist()
-
+        sim_scores.sort(key=lambda x: x[2], reverse=True)
         for edge in sim_scores:
             if edge[0] in done or edge[1] in done:
                 continue
@@ -79,4 +75,4 @@ def compute_sim_scores(graph, depth_limit):
             if depth > depth_limit:
                 break
 
-    return sim_scores
+    return list(sim_scores)
