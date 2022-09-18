@@ -1,4 +1,4 @@
-from typing import Set, Union, List, Tuple
+from typing import Union, List, Tuple
 import numpy as np
 import json
 from json import JSONEncoder
@@ -75,7 +75,7 @@ class NodeEncoder(JSONEncoder):
 
 class Graph:
     nodes: List[Node]
-    edges: Dict[Tuple[Node]]  # list of tuples of nodes actually
+    edges: List[Tuple[Node]]  # list of tuples of nodes actually
 
     def __init__(self, nodes = [], edges = []):
         self.nodes = nodes
@@ -91,12 +91,11 @@ class Graph:
     
 
     def add_edge(self, edge):
-            edge[0].point_out.add(edge[1])
-            edge[1].point_in.add(edge[0])
-            # update first and/or second of node
-            if edge[0].flashcard.first is None:
-                edge[0].flashcard.first = edge[1].flashcard.front
-            elif edge[0].flashcard.second is None:
-                edge[0].flashcard.second = edge[1].flashcard.front
-
-            self.edges.append(edge)
+        edge[0].point_out.add(edge[1])
+        edge[1].point_in.add(edge[0])
+        # update first and/or second of node
+        if edge[0].flashcard.first is None:
+            edge[0].flashcard.first = edge[1].flashcard.front
+        elif edge[0].flashcard.second is None:
+            edge[0].flashcard.second = edge[1].flashcard.front
+        self.edges.append(edge)
