@@ -12,7 +12,11 @@ import {
   VStack,
 } from "native-base";
 import NativeBaseIcon from "../../components/NativeBaseIcon";
-import {createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword} from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../../firebase";
 import { useNavigation } from "@react-navigation/native";
@@ -42,18 +46,18 @@ export function LoginPage() {
   // Sign up a user
   function RegisterUser() {
     createUserWithEmailAndPassword(auth, email, password)
-        .then((userCred) => {
-          const user = userCred.user;
-          console.log("User created:" + user);
-          (navigation as any).navigate("home");
-        })
-        .catch((error) => {
-          toast.show({
-            title: error.code,
-            description: error.message,
-            backgroundColor: "red.600",
-          });
+      .then((userCred) => {
+        const user = userCred.user;
+        console.log("User created:" + user);
+        (navigation as any).navigate("home");
+      })
+      .catch((error) => {
+        toast.show({
+          title: error.code,
+          description: error.message,
+          backgroundColor: "red.600",
         });
+      });
   }
 
   return (
@@ -89,9 +93,7 @@ export function LoginPage() {
           </VStack>
           <HStack space={2}>
             <Button onPress={LoginUser}>Login</Button>
-            <Button onPress={RegisterUser}>
-              Register
-            </Button>
+            <Button onPress={RegisterUser}>Register</Button>
           </HStack>
         </VStack>
       </Center>
