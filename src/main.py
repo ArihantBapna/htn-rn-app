@@ -60,8 +60,7 @@ def get_visualization_url():
 @app.route("/get_graph")
 def get_graph():
     flashcards = get_flashcards("https://firebasestorage.googleapis.com/v0/b/htn-rn-app.appspot.com/o/oJDN2chA8uM6BzbAzbrIR4wisD22%2FY2Mate.is%20-%20TORONTO%20VLOG%20A%20WEEKEND%20IN%20MY%20LIFE-C6yA9Eh8sLY-48k-1660023393366.mp3?alt=media&token=3eb105ec-aa36-45c4-a1b4-e996b1269803")
-    print(f"GRAPH: {compute_graph(flashcards)}")
-    return "success"
+    return compute_graph(flashcards)
 
 
 if __name__ == "__main__":
