@@ -40,7 +40,12 @@ class Flashcard:
         self._average_embedding = average_embedding
 
     def flashcard_to_json(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+        ## Convert every flashcard to a json object, but don't include the embeddings
+        stripped = self.__dict__.copy() # copy the dict so we don't modify the original
+        del stripped["_headline_embedding"]
+        del stripped["_embedding"]
+        del stripped["_average_embedding"]
+        return json.dumps(stripped, cls=FlashcardEncoder)
 
 class FlashcardEncoder(JSONEncoder):
     def default(self, o):
@@ -56,6 +61,10 @@ class Node:
         self.flashcard = flashcard
         self.point_in = point_in
         self.point_out = point_out
+    
+    # def node_to_json(self):
+    #     flashcard_stripped = self.flashcard.flashcard_to_json()
+    #     return json.dumps(self.__dict__, cls=NodeEncoder)
 
 
 class NodeEncoder(JSONEncoder):
