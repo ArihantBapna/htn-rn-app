@@ -28,7 +28,7 @@ def get_prof_data(url):
 def json_to_lst(text_content: str):
     """Converts a json transcript to a list of strings."""
     # assumption: this is the prof's transcript
-    text_content = re.sub(r"\(.*\)", "", text_content)
+    text_content = re.sub(r"\(.*\)", "", str(text_content))
     nlp = English()  # just the language with no pipeline
     nlp.add_pipe("sentencizer")
     doc = nlp(text_content)

@@ -24,7 +24,6 @@ def compute_graph(flashcards: List[Flashcard]) -> Graph:
     graph = Graph() 
     for flashcard in flashcards:
         graph.add_node(Node(flashcard, set(), set()))
-    
     sim_max = 5
     # sort according to sim score
     # going down in the table, attempt to add a given edge
@@ -38,6 +37,9 @@ def compute_graph(flashcards: List[Flashcard]) -> Graph:
     done = set()
     available = set(graph.nodes)
     while len(available) > 0:
+        if len(available) == 1:
+            done.add(available.pop())
+            break
         sim_scores = compute_sim_scores(graph, sim_max)
         sim_scores.sort(key=lambda x: x[2], reverse=True)
         for edge in sim_scores:
