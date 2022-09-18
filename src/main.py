@@ -1,4 +1,6 @@
 import os
+cohere_api = '2LMDM3GEVPLvDVoSQlm4bV5W4EbKn2ZW0jgl6zEM'
+assembly_api = 'c4187da13e3d4c6fa7ead1cac4246a1f'
 from flask import Flask
 from flask import request
 from flask_cors import CORS
@@ -8,11 +10,11 @@ from process_text import get_flashcards
 from get_visualization import visualize_data
 from compute_graph import compute_graph
 import json
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
-cohere_api = os.getenv('cohere')
-assembly_api = os.getenv('assembly')
+# load_dotenv()
+
+# os.getenv('assembly')
 
 app = Flask(__name__)
 CORS(app)
