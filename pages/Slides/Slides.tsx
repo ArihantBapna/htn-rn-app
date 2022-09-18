@@ -1,7 +1,10 @@
 import {TapGestureHandler, FlingGestureHandler, State, Directions} from 'react-native-gesture-handler';
 import {useEffect, useState} from "react";
-import {Center, Heading, ScrollView, useToast, View} from "native-base";
+import {Center, Heading, ScrollView, useToast, View as NativeView} from "native-base";
 import axios from "axios";
+// @ts-ignore
+import image from "./assets/bg.png";
+import {ImageBackground, View} from "react-native";
 
 export function SlidesPage({ route, navigation }: any){
     const { recording } = route.params;
@@ -25,43 +28,51 @@ export function SlidesPage({ route, navigation }: any){
     }, [])
 
     return (
-        <FlingGestureHandler direction={Directions.LEFT} onHandlerStateChange={({nativeEvent}) => {
-            if (nativeEvent.state === State.ACTIVE) {
-                if (node["first"]){
-                    setNode(tree[node["first"]]);
-                }
-            }
-        }}>
-            <FlingGestureHandler direction={Directions.RIGHT} onHandlerStateChange={({nativeEvent}) => {
-                if (nativeEvent.state === State.ACTIVE) {
-                    console.log("swiped right");
-                    if (node["second"]){
-                        setNode(tree[node["second"]]);
-                    }
-                }
-            }
-            }>
-                <TapGestureHandler onHandlerStateChange={({nativeEvent}) => {
+        <ImageBackground resizeMode='cover'  source={image} style={{width: "100%", height: "100%"}}>
+            <View style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center"
+            }}>
+                <FlingGestureHandler direction={Directions.LEFT} onHandlerStateChange={({nativeEvent}) => {
                     if (nativeEvent.state === State.ACTIVE) {
-                        if (mainText === node["front"]){
-                            setMainText(node["back"]);
-                        }
-                        else {
-                            setMainText(node["front"]);
+                        if (node["first"]){
+                            setNode(tree[node["first"]]);
                         }
                     }
                 }}>
-                        <View height={"100%"} display={"flex"} alignContent={"center"} alignItems={"center"} flexDirection={"column"} justifyContent={"center"} px={16} py={16}>
-                            <Heading>Flashcards</Heading>
-                            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
-                                <Center>
-                                    <Heading textAlign={"justify"}>{mainText}</Heading>
-                                </Center>
-                            </ScrollView>
-                        </View>
+                    <FlingGestureHandler direction={Directions.RIGHT} onHandlerStateChange={({nativeEvent}) => {
+                        if (nativeEvent.state === State.ACTIVE) {
+                            console.log("swiped right");
+                            if (node["second"]){
+                                setNode(tree[node["second"]]);
+                            }
+                        }
+                    }
+                    }>
+                        <TapGestureHandler onHandlerStateChange={({nativeEvent}) => {
+                            if (nativeEvent.state === State.ACTIVE) {
+                                if (mainText === node["front"]){
+                                    setMainText(node["back"]);
+                                }
+                                else {
+                                    setMainText(node["front"]);
+                                }
+                            }
+                        }}>
+                                <NativeView height={"100%"} display={"flex"} alignContent={"center"} alignItems={"center"} flexDirection={"column"} justifyContent={"center"} px={16} py={16}>
+                                    <Heading pt={8}>Flashcards</Heading>
+                                    <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+                                        <Center>
+                                            <Heading textAlign={"justify"}>{mainText}</Heading>
+                                        </Center>
+                                    </ScrollView>
+                                </NativeView>
 
-                </TapGestureHandler>
-            </FlingGestureHandler>
-        </FlingGestureHandler>
+                        </TapGestureHandler>
+                    </FlingGestureHandler>
+                </FlingGestureHandler>
+            </View>
+        </ImageBackground>
     );
 }
