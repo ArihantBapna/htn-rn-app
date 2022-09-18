@@ -79,7 +79,7 @@ def get_similar_sentences(prof_transcript, prof_embeddings, headlines, n=3):
     #         similar_sentences[headline][1].append(prof_transcript[top])
     #         similar_sentences[headline][2].append(prof_embeddings[top])
     for headline in headlines:
-        top = search_index.get_nns_by_vector(similar_sentences[headline][0], n)
+        top = search_index.get_nns_by_vector(similar_sentences[headline][0], n * 2)
         for i in top:
             if prof_transcript[i] in seen:
                 continue
