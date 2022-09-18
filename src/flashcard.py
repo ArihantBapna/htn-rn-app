@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, List, Tuple
 import numpy as np
 import json
 from json import JSONEncoder
@@ -71,3 +71,27 @@ class Node:
 class NodeEncoder(JSONEncoder):
     def default(self, o):
         return o.__dict__
+
+
+class Graph:
+    nodes: List[Node]
+    edges: List[Node] # list of tuples of nodes actually
+
+    def __init__(self, nodes = None, edges = None):
+        self.nodes = nodes
+        self.edges = edges
+
+    def graph_to_json(self):
+        return json.dumps(self.__dict__, cls=GraphEncoder)
+    
+    def add_node(self, node):
+        self.nodes.append(node)
+    
+    def add_edge(self, edge):
+        self.edges.append(edge)
+
+
+class GraphEncoder(JSONEncoder):
+    def default(self, o):
+        return o.__dict__
+        
