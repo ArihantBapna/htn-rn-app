@@ -45,8 +45,8 @@ def get_prof_transcript():
 
 @app.route("/process_text")
 def process_text():
-    return get_flashcards("https://firebasestorage.googleapis.com/v0/b/htn-rn-app.appspot.com/o/oJDN2chA8uM6BzbAzbrIR4wisD22%2F166.x-m4a?alt=media&token=55c79b8e-73d9-4b1e-8a71-89ad1a37ca1a")
-
+    x = get_flashcards("https://firebasestorage.googleapis.com/v0/b/htn-rn-app.appspot.com/o/oJDN2chA8uM6BzbAzbrIR4wisD22%2F166.x-m4a?alt=media&token=55c79b8e-73d9-4b1e-8a71-89ad1a37ca1a")
+    return True
 
 @app.route("/get_visualization")
 def get_visualization():
