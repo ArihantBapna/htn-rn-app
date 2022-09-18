@@ -88,7 +88,6 @@ class Graph:
 
     def add_node(self, node):
         self.nodes.append(node)
-    
 
     def add_edge(self, edge):
         edge[0].point_out.add(edge[1])
