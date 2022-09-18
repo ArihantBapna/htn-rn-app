@@ -1,4 +1,4 @@
-from load_audio import get_response, get_response_from_url
+from load_audio import get_response_from_url
 import json
 
 filename = "Asking Harvard Students If They Ever Sleep.mp3"
@@ -51,7 +51,7 @@ def get_transcript_from_url(url):
 
 def get_transcript(file):
     # assumption: speaker A is the prof <3
-    response_json = get_response(filename)
+    response_json = get_response_from_url(filename)
     speakers = response_json["utterances"]
 
     speaker_to_str = {"speaker_lst": []}
