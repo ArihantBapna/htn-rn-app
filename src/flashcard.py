@@ -83,8 +83,8 @@ class Graph:
 
     def graph_to_json(self):
         # Convert every node to a json object, but don't include the embeddings
-        nodes = [node.flashcard.flashcard_to_json() for node in self.nodes]
-        return str(json.dumps(nodes, cls=NodeEncoder))
+        flashcards = [n.flashcard.flashcard_to_json() for n in self.nodes]
+        return str(json.dumps(flashcards))
         
     
     def add_node(self, node):
