@@ -1,5 +1,4 @@
 import requests
-import json
 
 filename = "Asking Harvard Students If They Ever Sleep.mp3"
 
@@ -11,6 +10,7 @@ def read_file(filename, chunk_size=5242880):
             if not data:
                 break
             yield data
+
 
 def get_response_from_url(url):
     headers = {'authorization': "b479f0aa918d4566aaacdec3f82c9b54", 'content-type': "application/json"}
