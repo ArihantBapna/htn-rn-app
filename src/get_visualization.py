@@ -1,12 +1,11 @@
-from typing import Dict, Set
+from typing import Dict, Set, List
 from flashcard import Flashcard, Node
-from process_text import get_flashcards
 import numpy as np
 import pandas as pd
 from collections import defaultdict
 
 
-def visualize_data(flashcards):
+def visualize_data(flashcards: List[Flashcard]):
     # average flashcards
     flashcard_vectors = {}
     for flashcard in flashcards:
@@ -17,7 +16,6 @@ def visualize_data(flashcards):
         avg = np.mean(embeddings_to_avg, axis=0)
         flashcard_vectors[flashcard] = avg
         flashcard.set_average_embedding(avg)
-    print(flashcard_vectors)
 
     # add .first and .second values to flashcards
     assign_first_second(flashcard_vectors)
@@ -28,6 +26,7 @@ def visualize_data(flashcards):
     lonely, edges = determine_lonely_popular_fan(nodes)
     adjust_graph(lonely, edges)
 
+    assert len(nodes) > 0
     # rank nodes by # of input nodes
     return rank_nodes(nodes)
 
@@ -49,7 +48,6 @@ def assign_first_second(flashcard_vectors: Dict[Flashcard, np.array]) -> None:
             corresponding_similarities = {}
 
             for other_front in flashcard_vectors:
-                print(f"other front: {other_front.front}")
                 other_vector = flashcard_vectors[other_front]
                 if flashcard != other_front:  # don't compare the same node to itself
                     cos_val = np.dot(flashcard_vector, other_vector) / (flashcard_vector.size * other_vector.size)
@@ -68,35 +66,35 @@ def get_top_two_vectors(corresponding_similarities: Dict[Flashcard, np.array]):
     second = ['', 0]
     for front in corresponding_similarities:
         cos_val = corresponding_similarities[front]
-        print(cos_val)
         if cos_val >= first[1]:
             first = [front, cos_val]
         elif cos_val >= second[1]:
             second = [front, cos_val]
-        print(f"{first} {second}")
     assert first != ['', 0]
     assert second != ['', 0]
     return first, second
 
 
-def initialize_nodes(flashcards: Set[Flashcard], flashcard_dict: Dict[str, Flashcard]):
+def initialize_nodes(flashcards: List[Flashcard], flashcard_dict: Dict[str, Flashcard]):
     """Iterate over flashcards to create nodes: Set[Nodes].
     """
     temp_nodes = {}
     for flashcard in flashcards:
+        assert isinstance(flashcard, Flashcard)
         corresponding_node = Node(flashcard, {flashcard.first, flashcard.second}, set())
         temp_nodes[flashcard] = corresponding_node
 
     for flashcard in temp_nodes:
-        first = flashcard_dict[flashcard.first]  # type(first) == Flashcard
-        first_node = temp_nodes[first]  # type(first_node) = Node
-        temp_nodes[first].point_in.add(first_node)  # Node points to Node
+        if flashcard.first is not None:
+            first = flashcard_dict[flashcard.first]  # type(first) == Flashcard
+            first_node = temp_nodes[first]  # type(first_node) = Node
+            temp_nodes[first].point_in.add(first_node)  # Node points to Node
+        if flashcard.first is not None:
+            second = flashcard_dict[flashcard.second]
+            second_node = temp_nodes[second]
+            temp_nodes[second].point_in.add(second_node)
 
-        second = flashcard_dict[flashcard.second]
-        second_node = temp_nodes[second]
-        temp_nodes[second].point_in.add(second_node)
-
-    nodes = {node for _, node in temp_nodes}
+    nodes = {temp_nodes[flashcard] for flashcard in temp_nodes}
     return nodes
 
 
@@ -112,7 +110,6 @@ def determine_lonely_popular_fan(nodes: Set[Node]):
         if len(node.point_in) >= 2:
             for node_in in node.point_in:
                 edges.add((node_in, node))  # Node_in (fan) -> Node (popular)
-
     return lonely, edges
 
 
@@ -128,7 +125,8 @@ def rank_fan_nodes(lonely_node: Node, edges: Set[tuple]):
         lst.append([fan_node, popular_node, cos_val])
 
     df = pd.DataFrame(lst)
-    df.sort_values(by=2, axis=0)
+    if df.size > 0:
+        df.sort_values(by=2, axis=0)
     return df.values.tolist()
 
 
@@ -170,7 +168,7 @@ def rank_nodes(nodes: Set[Node]):
         d[len(node.point_in)].append(node.flashcard.front)
         if len(node.point_in) > m:
             m = len(node.point_in)
-    for i in range(m):
+    for i in range(m + 1):  # + 1 for if m = 0; at least put node #0
         if i in d:
             lst.extend(d[i])
     return lst

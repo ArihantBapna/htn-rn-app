@@ -7,7 +7,6 @@ from json import JSONEncoder
 class Flashcard:
     front: str
     back: str
-    gist: str
     first: Union[None, str]
     second: Union[None, str]
     headline: str
@@ -15,11 +14,10 @@ class Flashcard:
     _embedding: list
     _average_embedding: Union[None, np.array]
 
-    def __init__(self, front, back, gist, first, second, headline_str, headline_embedding, embedding,
+    def __init__(self, front, back, first, second, headline_str, headline_embedding, embedding,
                  average_embedding):
         self.front = front
         self.back = back
-        self.gist = gist
         self.headline = headline_str
         self._headline_embedding = headline_embedding
         self._embedding = embedding

@@ -94,6 +94,7 @@ def get_flashcards(url):
     prof_embeddings = prof_data[1]  #
     entities = prof_data[2]
     chapters = prof_data[3]
+    print(f"\n\n{chapters}\n\n")
     # get the chapters, get the unique titles from each chapter
     titles = [get_titles_from_chapters(c) for c in chapters]
     headlines = [c[1] for c in chapters]
@@ -102,25 +103,23 @@ def get_flashcards(url):
         prof_transcript, prof_embeddings, headlines
     )
     # ^^^ key: headline, value: (headline embedding, list of top 3 phrases, list of embeddings)
-    flashcards = set()
-    for t in titles:
-        for headline in headlines:
-            sents = " ".join(similar_sentences[headline][1])
-            back = f"{headline} {sents}"
-            embedding = co.embed(texts=[back], model="large", truncate="RIGHT").embeddings
-            flashcards.add(
-                Flashcard(
-                    t,
-                    back,
-                    chapters[0],
-                    None,
-                    None,
-                    headline,
-                    similar_sentences[headline][0],
-                    embedding[0],
-                    None
-                )
+    flashcards = []
+    for t, h, c in zip(titles, headlines, chapters):
+        sents = " ".join(similar_sentences[h][1])
+        back = f"{h} {sents}"
+        embedding = co.embed(texts=[back], model="large", truncate="RIGHT").embeddings
+        flashcards.append(
+            Flashcard(
+                t,
+                back,
+                None,
+                None,
+                h,
+                similar_sentences[h][0],
+                embedding[0],
+                None
             )
+        )
     # init flashcard: need front: str
     # back: str
     # gist: str
