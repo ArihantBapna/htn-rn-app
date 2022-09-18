@@ -44,8 +44,6 @@ export function TranscriptPage({ route, navigation }: any) {
   return (
     <NativeBaseProvider>
       <Box height={"100%"} px={8} safeArea>
-        <Heading textAlign={"center"}></Heading>
-
         <Center>
           {!transcript ? (
             <Heading>Transcript is loading...</Heading>

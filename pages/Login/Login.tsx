@@ -2,7 +2,7 @@ import {
   Button,
   Center,
   Heading,
-  HStack,
+  HStack, Image,
   Input,
   NativeBaseProvider,
   Switch,
@@ -20,6 +20,12 @@ import {
 import React, { useState } from "react";
 import { auth } from "../../firebase";
 import { useNavigation } from "@react-navigation/native";
+import {ImageBackground, View} from "react-native";
+
+// @ts-ignore
+import image from "./assets/bg.png"
+// @ts-ignore
+import logo from "./assets/squirrel_logo.png"
 
 export function LoginPage() {
   const [email, setEmail] = useState<string>("");
@@ -62,41 +68,51 @@ export function LoginPage() {
 
   return (
     <NativeBaseProvider>
-      <Center
-        _dark={{ bg: "blueGray.900" }}
-        _light={{ bg: "blueGray.50" }}
-        px={4}
-        flex={1}
-      >
-        <VStack space={5} alignItems="center">
-          <NativeBaseIcon />
-          <Heading size="lg">Welcome to Squirrel</Heading>
-          <VStack space={2} width={"auto"} alignItems="center">
-            <Input
-              type={"text"}
-              value={email}
-              onChangeText={setEmail}
-              width={"100%"}
-              height={"40px"}
-              variant="outline"
-              placeholder="Email"
-            />
-            <Input
-              type={"password"}
-              value={password}
-              onChangeText={setPassword}
-              width={"100%"}
-              height={"40px"}
-              variant="outline"
-              placeholder="Password"
-            />
-          </VStack>
-          <HStack space={2}>
-            <Button onPress={LoginUser}>Login</Button>
-            <Button onPress={RegisterUser}>Register</Button>
-          </HStack>
-        </VStack>
-      </Center>
+      <ImageBackground resizeMode='cover'  source={image} style={{width: "100%", height: "100%"}}>
+        <View style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center"
+        }}>
+          <Center
+              px={4}
+              flex={1}
+          >
+            <VStack space={5} alignItems="center">
+              <Image source={logo} alt="Squirrel Logo" size="xl" />
+              <Heading size="lg">Welcome to SquirrelAI</Heading>
+              <VStack space={2} width={"auto"} alignItems="center">
+                <Input
+                    type={"text"}
+                    value={email}
+                    backgroundColor={"rgba(224,178,147,0.09)"}
+                    onChangeText={setEmail}
+                    width={"100%"}
+                    height={"40px"}
+                    variant="underlined"
+                    px={4}
+                    placeholder="Email"
+                />
+                <Input
+                    type={"password"}
+                    value={password}
+                    backgroundColor={"rgba(224,178,147,0.09)"}
+                    onChangeText={setPassword}
+                    width={"100%"}
+                    height={"40px"}
+                    variant="underlined"
+                    px={4}
+                    placeholder="Password"
+                />
+              </VStack>
+              <HStack space={2}>
+                <Button onPress={LoginUser} backgroundColor={"#C98860"}>Login</Button>
+                <Button onPress={RegisterUser} backgroundColor={"#C98860"}>Register</Button>
+              </HStack>
+            </VStack>
+          </Center>
+        </View>
+      </ImageBackground>
     </NativeBaseProvider>
   );
 }
